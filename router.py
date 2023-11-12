@@ -62,6 +62,7 @@ class Router:
         return self.pit
 
     # record the incoming interface of Interest Packet
+    # WHERE THE PACKET CAME FROM?
     def setPit(self, name, interface):  # incoming interface
         self.pit.append((name, interface))
 
