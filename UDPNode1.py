@@ -14,6 +14,7 @@ def find_node(name):
     for i in range(len(references)):
         if(name == list(references[i].keys())[0]):
             return i
+    print("can't find node ", name)
 
 ########### Setup #########
 def setup_sockets(listen_port,send_port):
@@ -27,33 +28,11 @@ def setup_sockets(listen_port,send_port):
 ########## Update ##############
 def update(interface,router,name):
     while True:
-        #auxiliaries for the classes that need it
-        aux_position = [random.randint(0,500),random.randint(0,500),random.randint(0,200)]
-        aux_oxygen = random.randint(0,100)
-        aux_battery = random.randint(0,100)
-        aux_fish = []
-        for i in range (random.randint(0,300)):
-            aux_fish.append(Interfaces.Fish())
-        aux_ships = []
-        for i in range (random.randint(0,50)):
-            aux_ships.append(Interfaces.Ship())
+    
         #updating every 10 seconds
-        if (interface.__class__.__name__ in ['Oxygen', 'Battery', 'Heart', 'Position', 'Camera', 'WindS', 'WindD', 'Temperature', 'Precipitation']):
+        if (interface.__class__.__name__ in ['temperature', 'humidity', 'lidar', 'light', 'radiation', 'pressure', 'soil_composition', 'camera', 'battery']):
             interface.update()
-        elif (interface.__class__.__name__ == 'Light'):
-            interface = Interfaces.Light(aux_position)
-        elif (interface.__class__.__name__ == 'Pressure'):
-            interface = Interfaces.Pressure(aux_position)
-        elif (interface.__class__.__name__ == 'Radar'):
-            interface = Interfaces.Radar(aux_fish, aux_position)
-        elif (interface.__class__.__name__ == 'ShipRadar'):
-            interface = Interfaces.ShipRadar(aux_ships, aux_position)
-        elif (interface.__class__.__name__ == 'Fauna'):
-            interface = Interfaces.Fauna(aux_fish)
-        elif (interface.__class__.__name__ == 'Optimizer'):
-            interface = Interfaces.Optimizer(aux_battery)
-        elif (interface.__class__.__name__ == 'Alert'):
-            interface = Interfaces.Alert(aux_battery, aux_fish, aux_oxygen, aux_ships)
+    
         #Update content store with data
         router.setCS(name,interface.data,time.time())
         time.sleep(10)
@@ -68,7 +47,6 @@ def outbound(socket,router,lock,interface):
         lock.acquire()
         #Send to some neighbor given longest prefix protocol or FIB
         neighbor = router.longestPrefix(interest)
-        print(neighbor)
         packet = (interest, interface)
         router.setPit(interest,interface)
         socket.sendto(json.dumps(packet).encode(), (neighbor[len(neighbor)-1][1],neighbor[len(neighbor)-1][2]))
@@ -128,22 +106,15 @@ def handle_packet(router, packet,socket):
         data = packet[1]
         inPit = False
         #Remove elements in PIT which contain interest
-        i=0
         for interest in router.getPit(): 
-            print("interest number ", i, " is: ", interest)
-            i=i+1
             if interest[0] == name:
-                print("Satisfying interest table, because interest[0] is ", interest[0])
+                print("Satisfying interest table")
                 router.popPit(interest[0],interest[1])
                 #Send data packet to requesters
                 if interest[1] != router.name:
-                    print("interest[1] is ", interest[1])
-                    print("router.name is ", router.name)
                     address = router.getAddress(interest[1])
-                    print("Forwarding data packet to ", address)
                     socket.sendto(json.dumps(packet).encode(), address)
                 inPit = True
-
         if inPit:
             print("Updating Content store")
             router.setCS(name,data[0],data[1])

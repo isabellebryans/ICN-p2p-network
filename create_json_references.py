@@ -2,44 +2,40 @@ import json
 
 Addresses = ["10.35.70.1", "10.35.70.9"]
 
-Networks = ["divers", "scientists"]
+Networks = ["rovers", "bases"]
 
-Divers = ["diver1","diver2","diver3","diver4","diver5"]
-DiverNeighborList = [["/divers/diver3","/divers/diver4","/scientists/scientist1"], ["/divers/diver4","/divers/diver5","/scientists/scientist1","/scientists/scientist4"], ["/divers/diver1"], ["/divers/diver1","/divers/diver2"], ["/divers/diver2","/scientists/scientist2"]]
+Rovers = ["rover1","rover2","rover3","rover4","rover5"]
+RoverNeighborList = [["/rovers/rover5","/rovers/rover1","/bases/base1"], ["/rovers/rover1","/rovers/rover3"], ["/rovers/rover2", "/rovers/rover4"], ["/rovers/rover3","/rovers/rover5", "/bases/base1"], ["/rovers/rover4","/rovers/rover1"]]
 
-Scientists = ["scientist1", "scientist2", "scientist3","scientist4","scientist5"]
+Bases = ["base1"]
 
-DiverSensors = ["light", "oxygen", "position", "pressure", "radar", "heartrate", "battery", "camera"]
+RoverSensors = ["temperature", "humidity", "lidar", "pressure", "light", "soil_composition", "battery", "radiation", "camera"]
 
-ScientistSensors = ["shipradar", "fauna", "optimizer", "winds", "windd", "temperature", "precipitation", "alert"]
-ScientistNeighborList = [["/scientists/scientist3","/scientists/scientist4","/divers/diver1","/divers/diver2"], ["/scientists/scientist3","/divers/diver2","/divers/diver5"],["/scientists/scientist1","/scientists/scientist2","/scientists/scientist4","/scientists/scientist5"], ["/scientists/scientist3"]]
+#baseSensors = ["shipradar", "fauna", "optimizer", "winds", "windd", "temperature", "precipitation", "alert"]
+BaseNeighborList = [["/rovers/rover1","/rovers/rover4"]]
 
 json_array = []
 
 listen_port = 33001
 send_port = 33002
 neighbor_itertator = 0
-for diver in Divers:
-    diver_name = "/" + Networks[0] + "/" + diver
-    json_array.append({diver_name : [{"listen port": listen_port,"send port": send_port,"address": Addresses[0]},{"neighbors" : DiverNeighborList[neighbor_itertator]}]})
+for rover in Rovers:
+    rover_name = "/" + Networks[0] + "/" + rover
+    json_array.append({rover_name : [{"listen port": listen_port,"send port": send_port,"address": Addresses[0]},{"neighbors" : RoverNeighborList[neighbor_itertator]}]})
     listen_port += 2
     send_port += 2
     neighbor_itertator +=1
-    for sensor in DiverSensors:
-        json_array.append({"/" + Networks[0] + "/" + diver + "/" + sensor : [{"listen port": listen_port,"send port": send_port,"address": Addresses[0]},{"neighbors" : [diver_name]}]})
+    for sensor in RoverSensors:
+        json_array.append({"/" + Networks[0] + "/" + rover + "/" + sensor : [{"listen port": listen_port,"send port": send_port,"address": Addresses[0]},{"neighbors" : [rover_name]}]})
         listen_port += 2
         send_port += 2
 
 neighbor_itertator = 0
-for scientist in Scientists:
-    scientist_name = "/" + Networks[1] + "/" + scientist
-    json_array.append({scientist_name : [{"listen port": listen_port,"send port": send_port,"address": Addresses[1]},{"neighbors" : ScientistNeighborList[neighbor_itertator]}]})
+for base in Bases:
+    base_name = "/" + Networks[1] + "/" + base
+    json_array.append({base_name : [{"listen port": listen_port,"send port": send_port,"address": Addresses[1]},{"neighbors" : BaseNeighborList[neighbor_itertator]}]})
     listen_port += 2
     send_port += 2
-    for sensor in ScientistSensors:
-        json_array.append({"/" + Networks[1] + "/" + scientist + "/" + sensor : [{"listen port": listen_port,"send port": send_port,"address": Addresses[1]},{"neighbors" : [scientist_name]}]})
-        listen_port += 2
-        send_port += 2
 
 
 with open('interfaces.json', 'w') as f:

@@ -1,6 +1,6 @@
 [
     {
-        "/divers/diver1": [
+        "/rovers/rover1": [
             {
                 "listen port": 33001,
                 "send port": 33002,
@@ -8,15 +8,15 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver3",
-                    "/divers/diver4",
-                    "/scientists/scientist1"
+                    "/rovers/rover5",
+                    "/rovers/rover1",
+                    "/bases/base1"
                 ]
             }
         ]
     },
     {
-        "/divers/diver1/light": [
+        "/rovers/rover1/temperature": [
             {
                 "listen port": 33003,
                 "send port": 33004,
@@ -24,13 +24,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver1"
+                    "/rovers/rover1"
                 ]
             }
         ]
     },
     {
-        "/divers/diver1/oxygen": [
+        "/rovers/rover1/humidity": [
             {
                 "listen port": 33005,
                 "send port": 33006,
@@ -38,13 +38,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver1"
+                    "/rovers/rover1"
                 ]
             }
         ]
     },
     {
-        "/divers/diver1/position": [
+        "/rovers/rover1/lidar": [
             {
                 "listen port": 33007,
                 "send port": 33008,
@@ -52,13 +52,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver1"
+                    "/rovers/rover1"
                 ]
             }
         ]
     },
     {
-        "/divers/diver1/pressure": [
+        "/rovers/rover1/pressure": [
             {
                 "listen port": 33009,
                 "send port": 33010,
@@ -66,13 +66,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver1"
+                    "/rovers/rover1"
                 ]
             }
         ]
     },
     {
-        "/divers/diver1/radar": [
+        "/rovers/rover1/light": [
             {
                 "listen port": 33011,
                 "send port": 33012,
@@ -80,13 +80,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver1"
+                    "/rovers/rover1"
                 ]
             }
         ]
     },
     {
-        "/divers/diver1/heartrate": [
+        "/rovers/rover1/soil_composition": [
             {
                 "listen port": 33013,
                 "send port": 33014,
@@ -94,13 +94,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver1"
+                    "/rovers/rover1"
                 ]
             }
         ]
     },
     {
-        "/divers/diver1/battery": [
+        "/rovers/rover1/battery": [
             {
                 "listen port": 33015,
                 "send port": 33016,
@@ -108,13 +108,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver1"
+                    "/rovers/rover1"
                 ]
             }
         ]
     },
     {
-        "/divers/diver1/camera": [
+        "/rovers/rover1/radiation": [
             {
                 "listen port": 33017,
                 "send port": 33018,
@@ -122,13 +122,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver1"
+                    "/rovers/rover1"
                 ]
             }
         ]
     },
     {
-        "/divers/diver2": [
+        "/rovers/rover1/camera": [
             {
                 "listen port": 33019,
                 "send port": 33020,
@@ -136,16 +136,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver4",
-                    "/divers/diver5",
-                    "/scientists/scientist1",
-                    "/scientists/scientist4"
+                    "/rovers/rover1"
                 ]
             }
         ]
     },
     {
-        "/divers/diver2/light": [
+        "/rovers/rover2": [
             {
                 "listen port": 33021,
                 "send port": 33022,
@@ -153,13 +150,14 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver2"
+                    "/rovers/rover1",
+                    "/rovers/rover3"
                 ]
             }
         ]
     },
     {
-        "/divers/diver2/oxygen": [
+        "/rovers/rover2/temperature": [
             {
                 "listen port": 33023,
                 "send port": 33024,
@@ -167,13 +165,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver2"
+                    "/rovers/rover2"
                 ]
             }
         ]
     },
     {
-        "/divers/diver2/position": [
+        "/rovers/rover2/humidity": [
             {
                 "listen port": 33025,
                 "send port": 33026,
@@ -181,13 +179,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver2"
+                    "/rovers/rover2"
                 ]
             }
         ]
     },
     {
-        "/divers/diver2/pressure": [
+        "/rovers/rover2/lidar": [
             {
                 "listen port": 33027,
                 "send port": 33028,
@@ -195,13 +193,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver2"
+                    "/rovers/rover2"
                 ]
             }
         ]
     },
     {
-        "/divers/diver2/radar": [
+        "/rovers/rover2/pressure": [
             {
                 "listen port": 33029,
                 "send port": 33030,
@@ -209,13 +207,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver2"
+                    "/rovers/rover2"
                 ]
             }
         ]
     },
     {
-        "/divers/diver2/heartrate": [
+        "/rovers/rover2/light": [
             {
                 "listen port": 33031,
                 "send port": 33032,
@@ -223,13 +221,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver2"
+                    "/rovers/rover2"
                 ]
             }
         ]
     },
     {
-        "/divers/diver2/battery": [
+        "/rovers/rover2/soil_composition": [
             {
                 "listen port": 33033,
                 "send port": 33034,
@@ -237,13 +235,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver2"
+                    "/rovers/rover2"
                 ]
             }
         ]
     },
     {
-        "/divers/diver2/camera": [
+        "/rovers/rover2/battery": [
             {
                 "listen port": 33035,
                 "send port": 33036,
@@ -251,13 +249,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver2"
+                    "/rovers/rover2"
                 ]
             }
         ]
     },
     {
-        "/divers/diver3": [
+        "/rovers/rover2/radiation": [
             {
                 "listen port": 33037,
                 "send port": 33038,
@@ -265,13 +263,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver1"
+                    "/rovers/rover2"
                 ]
             }
         ]
     },
     {
-        "/divers/diver3/light": [
+        "/rovers/rover2/camera": [
             {
                 "listen port": 33039,
                 "send port": 33040,
@@ -279,13 +277,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver3"
+                    "/rovers/rover2"
                 ]
             }
         ]
     },
     {
-        "/divers/diver3/oxygen": [
+        "/rovers/rover3": [
             {
                 "listen port": 33041,
                 "send port": 33042,
@@ -293,13 +291,14 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver3"
+                    "/rovers/rover2",
+                    "/rovers/rover4"
                 ]
             }
         ]
     },
     {
-        "/divers/diver3/position": [
+        "/rovers/rover3/temperature": [
             {
                 "listen port": 33043,
                 "send port": 33044,
@@ -307,13 +306,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver3"
+                    "/rovers/rover3"
                 ]
             }
         ]
     },
     {
-        "/divers/diver3/pressure": [
+        "/rovers/rover3/humidity": [
             {
                 "listen port": 33045,
                 "send port": 33046,
@@ -321,13 +320,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver3"
+                    "/rovers/rover3"
                 ]
             }
         ]
     },
     {
-        "/divers/diver3/radar": [
+        "/rovers/rover3/lidar": [
             {
                 "listen port": 33047,
                 "send port": 33048,
@@ -335,13 +334,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver3"
+                    "/rovers/rover3"
                 ]
             }
         ]
     },
     {
-        "/divers/diver3/heartrate": [
+        "/rovers/rover3/pressure": [
             {
                 "listen port": 33049,
                 "send port": 33050,
@@ -349,13 +348,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver3"
+                    "/rovers/rover3"
                 ]
             }
         ]
     },
     {
-        "/divers/diver3/battery": [
+        "/rovers/rover3/light": [
             {
                 "listen port": 33051,
                 "send port": 33052,
@@ -363,13 +362,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver3"
+                    "/rovers/rover3"
                 ]
             }
         ]
     },
     {
-        "/divers/diver3/camera": [
+        "/rovers/rover3/soil_composition": [
             {
                 "listen port": 33053,
                 "send port": 33054,
@@ -377,13 +376,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver3"
+                    "/rovers/rover3"
                 ]
             }
         ]
     },
     {
-        "/divers/diver4": [
+        "/rovers/rover3/battery": [
             {
                 "listen port": 33055,
                 "send port": 33056,
@@ -391,14 +390,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver1",
-                    "/divers/diver2"
+                    "/rovers/rover3"
                 ]
             }
         ]
     },
     {
-        "/divers/diver4/light": [
+        "/rovers/rover3/radiation": [
             {
                 "listen port": 33057,
                 "send port": 33058,
@@ -406,13 +404,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver4"
+                    "/rovers/rover3"
                 ]
             }
         ]
     },
     {
-        "/divers/diver4/oxygen": [
+        "/rovers/rover3/camera": [
             {
                 "listen port": 33059,
                 "send port": 33060,
@@ -420,13 +418,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver4"
+                    "/rovers/rover3"
                 ]
             }
         ]
     },
     {
-        "/divers/diver4/position": [
+        "/rovers/rover4": [
             {
                 "listen port": 33061,
                 "send port": 33062,
@@ -434,13 +432,15 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver4"
+                    "/rovers/rover3",
+                    "/rovers/rover5",
+                    "/bases/base1"
                 ]
             }
         ]
     },
     {
-        "/divers/diver4/pressure": [
+        "/rovers/rover4/temperature": [
             {
                 "listen port": 33063,
                 "send port": 33064,
@@ -448,13 +448,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver4"
+                    "/rovers/rover4"
                 ]
             }
         ]
     },
     {
-        "/divers/diver4/radar": [
+        "/rovers/rover4/humidity": [
             {
                 "listen port": 33065,
                 "send port": 33066,
@@ -462,13 +462,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver4"
+                    "/rovers/rover4"
                 ]
             }
         ]
     },
     {
-        "/divers/diver4/heartrate": [
+        "/rovers/rover4/lidar": [
             {
                 "listen port": 33067,
                 "send port": 33068,
@@ -476,13 +476,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver4"
+                    "/rovers/rover4"
                 ]
             }
         ]
     },
     {
-        "/divers/diver4/battery": [
+        "/rovers/rover4/pressure": [
             {
                 "listen port": 33069,
                 "send port": 33070,
@@ -490,13 +490,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver4"
+                    "/rovers/rover4"
                 ]
             }
         ]
     },
     {
-        "/divers/diver4/camera": [
+        "/rovers/rover4/light": [
             {
                 "listen port": 33071,
                 "send port": 33072,
@@ -504,13 +504,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver4"
+                    "/rovers/rover4"
                 ]
             }
         ]
     },
     {
-        "/divers/diver5": [
+        "/rovers/rover4/soil_composition": [
             {
                 "listen port": 33073,
                 "send port": 33074,
@@ -518,14 +518,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver2",
-                    "/scientists/scientist2"
+                    "/rovers/rover4"
                 ]
             }
         ]
     },
     {
-        "/divers/diver5/light": [
+        "/rovers/rover4/battery": [
             {
                 "listen port": 33075,
                 "send port": 33076,
@@ -533,13 +532,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver5"
+                    "/rovers/rover4"
                 ]
             }
         ]
     },
     {
-        "/divers/diver5/oxygen": [
+        "/rovers/rover4/radiation": [
             {
                 "listen port": 33077,
                 "send port": 33078,
@@ -547,13 +546,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver5"
+                    "/rovers/rover4"
                 ]
             }
         ]
     },
     {
-        "/divers/diver5/position": [
+        "/rovers/rover4/camera": [
             {
                 "listen port": 33079,
                 "send port": 33080,
@@ -561,13 +560,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver5"
+                    "/rovers/rover4"
                 ]
             }
         ]
     },
     {
-        "/divers/diver5/pressure": [
+        "/rovers/rover5": [
             {
                 "listen port": 33081,
                 "send port": 33082,
@@ -575,13 +574,14 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver5"
+                    "/rovers/rover4",
+                    "/rovers/rover1"
                 ]
             }
         ]
     },
     {
-        "/divers/diver5/radar": [
+        "/rovers/rover5/temperature": [
             {
                 "listen port": 33083,
                 "send port": 33084,
@@ -589,13 +589,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver5"
+                    "/rovers/rover5"
                 ]
             }
         ]
     },
     {
-        "/divers/diver5/heartrate": [
+        "/rovers/rover5/humidity": [
             {
                 "listen port": 33085,
                 "send port": 33086,
@@ -603,13 +603,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver5"
+                    "/rovers/rover5"
                 ]
             }
         ]
     },
     {
-        "/divers/diver5/battery": [
+        "/rovers/rover5/lidar": [
             {
                 "listen port": 33087,
                 "send port": 33088,
@@ -617,13 +617,13 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver5"
+                    "/rovers/rover5"
                 ]
             }
         ]
     },
     {
-        "/divers/diver5/camera": [
+        "/rovers/rover5/pressure": [
             {
                 "listen port": 33089,
                 "send port": 33090,
@@ -631,86 +631,83 @@
             },
             {
                 "neighbors": [
-                    "/divers/diver5"
+                    "/rovers/rover5"
                 ]
             }
         ]
     },
     {
-        "/scientists/scientist1": [
+        "/rovers/rover5/light": [
             {
                 "listen port": 33091,
                 "send port": 33092,
-                "address": "10.35.70.9"
+                "address": "10.35.70.1"
             },
             {
                 "neighbors": [
-                    "/scientists/scientist3",
-                    "/scientists/scientist4",
-                    "/divers/diver1",
-                    "/divers/diver2"
+                    "/rovers/rover5"
                 ]
             }
         ]
     },
     {
-        "/scientists/scientist1/shipradar": [
+        "/rovers/rover5/soil_composition": [
             {
                 "listen port": 33093,
                 "send port": 33094,
-                "address": "10.35.70.9"
+                "address": "10.35.70.1"
             },
             {
                 "neighbors": [
-                    "/scientists/scientist1"
+                    "/rovers/rover5"
                 ]
             }
         ]
     },
     {
-        "/scientists/scientist1/fauna": [
+        "/rovers/rover5/battery": [
             {
                 "listen port": 33095,
                 "send port": 33096,
-                "address": "10.35.70.9"
+                "address": "10.35.70.1"
             },
             {
                 "neighbors": [
-                    "/scientists/scientist1"
+                    "/rovers/rover5"
                 ]
             }
         ]
     },
     {
-        "/scientists/scientist1/optimizer": [
+        "/rovers/rover5/radiation": [
             {
                 "listen port": 33097,
                 "send port": 33098,
-                "address": "10.35.70.9"
+                "address": "10.35.70.1"
             },
             {
                 "neighbors": [
-                    "/scientists/scientist1"
+                    "/rovers/rover5"
                 ]
             }
         ]
     },
     {
-        "/scientists/scientist1/winds": [
+        "/rovers/rover5/camera": [
             {
                 "listen port": 33099,
                 "send port": 33100,
-                "address": "10.35.70.9"
+                "address": "10.35.70.1"
             },
             {
                 "neighbors": [
-                    "/scientists/scientist1"
+                    "/rovers/rover5"
                 ]
             }
         ]
     },
     {
-        "/scientists/scientist1/windd": [
+        "/bases/base1": [
             {
                 "listen port": 33101,
                 "send port": 33102,
@@ -718,565 +715,8 @@
             },
             {
                 "neighbors": [
-                    "/scientists/scientist1"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist1/temperature": [
-            {
-                "listen port": 33103,
-                "send port": 33104,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist1"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist1/precipitation": [
-            {
-                "listen port": 33105,
-                "send port": 33106,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist1"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist1/alert": [
-            {
-                "listen port": 33107,
-                "send port": 33108,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist1"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist2": [
-            {
-                "listen port": 33109,
-                "send port": 33110,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist3",
-                    "/scientists/scientist4",
-                    "/divers/diver1",
-                    "/divers/diver2"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist2/shipradar": [
-            {
-                "listen port": 33111,
-                "send port": 33112,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist2"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist2/fauna": [
-            {
-                "listen port": 33113,
-                "send port": 33114,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist2"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist2/optimizer": [
-            {
-                "listen port": 33115,
-                "send port": 33116,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist2"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist2/winds": [
-            {
-                "listen port": 33117,
-                "send port": 33118,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist2"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist2/windd": [
-            {
-                "listen port": 33119,
-                "send port": 33120,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist2"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist2/temperature": [
-            {
-                "listen port": 33121,
-                "send port": 33122,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist2"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist2/precipitation": [
-            {
-                "listen port": 33123,
-                "send port": 33124,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist2"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist2/alert": [
-            {
-                "listen port": 33125,
-                "send port": 33126,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist2"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist3": [
-            {
-                "listen port": 33127,
-                "send port": 33128,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist3",
-                    "/scientists/scientist4",
-                    "/divers/diver1",
-                    "/divers/diver2"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist3/shipradar": [
-            {
-                "listen port": 33129,
-                "send port": 33130,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist3"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist3/fauna": [
-            {
-                "listen port": 33131,
-                "send port": 33132,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist3"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist3/optimizer": [
-            {
-                "listen port": 33133,
-                "send port": 33134,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist3"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist3/winds": [
-            {
-                "listen port": 33135,
-                "send port": 33136,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist3"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist3/windd": [
-            {
-                "listen port": 33137,
-                "send port": 33138,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist3"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist3/temperature": [
-            {
-                "listen port": 33139,
-                "send port": 33140,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist3"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist3/precipitation": [
-            {
-                "listen port": 33141,
-                "send port": 33142,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist3"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist3/alert": [
-            {
-                "listen port": 33143,
-                "send port": 33144,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist3"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist4": [
-            {
-                "listen port": 33145,
-                "send port": 33146,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist3",
-                    "/scientists/scientist4",
-                    "/divers/diver1",
-                    "/divers/diver2"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist4/shipradar": [
-            {
-                "listen port": 33147,
-                "send port": 33148,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist4"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist4/fauna": [
-            {
-                "listen port": 33149,
-                "send port": 33150,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist4"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist4/optimizer": [
-            {
-                "listen port": 33151,
-                "send port": 33152,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist4"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist4/winds": [
-            {
-                "listen port": 33153,
-                "send port": 33154,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist4"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist4/windd": [
-            {
-                "listen port": 33155,
-                "send port": 33156,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist4"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist4/temperature": [
-            {
-                "listen port": 33157,
-                "send port": 33158,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist4"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist4/precipitation": [
-            {
-                "listen port": 33159,
-                "send port": 33160,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist4"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist4/alert": [
-            {
-                "listen port": 33161,
-                "send port": 33162,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist4"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist5": [
-            {
-                "listen port": 33163,
-                "send port": 33164,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist3",
-                    "/scientists/scientist4",
-                    "/divers/diver1",
-                    "/divers/diver2"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist5/shipradar": [
-            {
-                "listen port": 33165,
-                "send port": 33166,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist5"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist5/fauna": [
-            {
-                "listen port": 33167,
-                "send port": 33168,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist5"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist5/optimizer": [
-            {
-                "listen port": 33169,
-                "send port": 33170,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist5"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist5/winds": [
-            {
-                "listen port": 33171,
-                "send port": 33172,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist5"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist5/windd": [
-            {
-                "listen port": 33173,
-                "send port": 33174,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist5"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist5/temperature": [
-            {
-                "listen port": 33175,
-                "send port": 33176,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist5"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist5/precipitation": [
-            {
-                "listen port": 33177,
-                "send port": 33178,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist5"
-                ]
-            }
-        ]
-    },
-    {
-        "/scientists/scientist5/alert": [
-            {
-                "listen port": 33179,
-                "send port": 33180,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/scientists/scientist5"
+                    "/rovers/rover1",
+                    "/rovers/rover4"
                 ]
             }
         ]
