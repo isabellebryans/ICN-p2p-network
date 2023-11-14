@@ -2,7 +2,6 @@ import random
 
 import numpy as np 
 
-
 def connect_sensor(self, prefix, interface):
     self.router.setPit(prefix, interface)
 
