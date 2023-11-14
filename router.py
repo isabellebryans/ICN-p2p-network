@@ -110,6 +110,7 @@ class Routers:
     def getMultiRequest(self):
         return self.multi_request
     
+    # Get list of neighbours that are rovers
     def getNeighbourRovers(self):
         neighbour_rovers = list(tuple())
         for k in range(len(self.fib)):
