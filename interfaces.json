@@ -9,7 +9,7 @@
             {
                 "neighbors": [
                     "/rovers/rover5",
-                    "/rovers/rover1",
+                    "/rovers/rover2",
                     "/bases/base1"
                 ]
             },

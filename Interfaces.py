@@ -6,14 +6,14 @@ import numpy as np
 def connect_sensor(self, prefix, interface):
     self.router.setPit(prefix, interface)
 
-class Base():
+class Base:
     def __init__(self,id):
         self.data=id
     #classes of base: alert, Fauna, Optimizer, data, ShipRadar, Temperature, WindD, WindS
     def update(self):
         pass
 
-class Rover():
+class Rover:
     def __init__(self,id):
         self.data = id
     #classes of diver: Battery, Danger, Heart, Light, Oxygen, Position, Pressure, Radar

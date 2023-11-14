@@ -5,7 +5,7 @@ Addresses = ["10.35.70.1", "10.35.70.9"]
 Networks = ["rovers", "bases"]
 
 Rovers = ["rover1","rover2","rover3","rover4","rover5"]
-RoverNeighborList = [["/rovers/rover5","/rovers/rover1","/bases/base1"], ["/rovers/rover1","/rovers/rover3"], ["/rovers/rover2", "/rovers/rover4"], ["/rovers/rover3","/rovers/rover5", "/bases/base1"], ["/rovers/rover4","/rovers/rover1"]]
+RoverNeighborList = [["/rovers/rover5","/rovers/rover2","/bases/base1"], ["/rovers/rover1","/rovers/rover3"], ["/rovers/rover2", "/rovers/rover4"], ["/rovers/rover3","/rovers/rover5", "/bases/base1"], ["/rovers/rover4","/rovers/rover1"]]
 
 Bases = ["base1"]
 
