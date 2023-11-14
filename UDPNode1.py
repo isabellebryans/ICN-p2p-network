@@ -9,6 +9,8 @@ bufferSize  = 1024
 file = open('interfaces.json')
 references = json.load(file)
 
+AttributeList = ["temperature","power", "volcanic_activity", "position", "humidity", "lidar", "pressure", "light", "soil_composition", "battery", "radiation", "camera"]
+
 #Finds the node with the given name in the reference json and returns its index
 def find_node(name):
     for i in range(len(references)):
@@ -29,13 +31,12 @@ def setup_sockets(listen_port,send_port):
 ########## Update ##############
 def update(interface,router,name):
     while True:
-        
+                
         # If sensor, update every 10 seconds
         if (interface.__class__.__name__ in ['LightSensor', 'PowerSensor', 'TemperatureSensor', 'HumiditySensor', 'LiDARSensor', 'LightSensor', 'RadiationSensor', 'AtmosphericPressureSensor', 'SoilCompositionSensor', 'VolcanicActivitySensor', 'PositionSensor', 'RoverCamera', 'Battery']):
             interface.update()
             #Update content store with data
             router.setCS(name,interface.data,time.time())
-        
         time.sleep(10)
 
 
@@ -66,16 +67,31 @@ def fresh(name, router):
             return False
         else:
             print("Fresh")
-            return True      
+            return True 
+
+def update_position(router):
+    sensor_name = router.getName() + "/position"
+    print("Getting location data ")
+    # Get address of sensor
+    address = router.getAddress(sensor_name)
+    
+    # Create data packet
+    packet = ('position', router.getLocation()[0])
+    print("Forward to " + sensor_name)
+    socket.sendto(json.dumps(packet).encode(), address)
+    return
 
 # Handle Income Data Packet
 def handle_packet(router, packet, socket):
     # decode packet
     packet = json.loads(packet.decode())
     print("Packet recieved is: ", packet)
-    if packet[0] not in ["temperature","power", "volcanic_activity", "position", "humidity", "lidar", "pressure", "light", "soil_composition", "battery", "radiation", "camera"]:
+
+    # Data sent from another group
+    if packet[0] not in AttributeList:
         print("Ignoring packet")
         return
+    
     need = packet[0]
     # INTEREST PACKET
     if len(packet) == 2:
