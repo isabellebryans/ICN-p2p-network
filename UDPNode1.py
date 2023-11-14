@@ -16,6 +16,7 @@ def find_node(name):
             return i
     print("can't find node ", name)
 
+
 ########### Setup #########
 def setup_sockets(listen_port,send_port):
     listen_socket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
@@ -99,6 +100,16 @@ def handle_packet(router, packet, socket):
             print("Forward to " + origin_node)
             socket.sendto(json.dumps(packet).encode(), address) 
             return
+        
+        elif need in router.getCS() and fresh(need,router):
+            print("I have the Data!")
+            #Produce data packet name : data : freshness
+            address = router.getAddress(origin_node)
+            # need to change this to store location of where the data was gotten
+            packet = (need,router.getCS()[need],origin_node)
+            # print("Forward to " + interface)
+            socket.sendto(json.dumps(packet).encode(), address)
+            return
             
         # Node is not a sensor, but has the sensor needed
         elif need in router.getSensors():
@@ -129,13 +140,16 @@ def handle_packet(router, packet, socket):
             destination_node=[] # possible next destination nodes to send the packet onto
             # Filter out "neighbours" that are this node itself, and Bases
             # Don't want to send it to bases yet because haven't implemented that part yet
+
             for neighbor in neighbors:
-                if neighbor[0] != origin_node and not neighbor[0].startswith('/bases'):
+                if neighbor[0] != origin_node:
                     destination_node.append(neighbor)
             print("destination nodes: ", destination_node)
             # choose a random one if there are more than one
-            if len(destination_node > 1):
+            if len(destination_node) >1:
                 destination_node = random.choice(destination_node)
+            else:
+                destination_node = destination_node[0]
             packet = (need, router.getLocation()[0])
             print("Forwarding to ", destination_node)
             socket.sendto(json.dumps(packet).encode(),(destination_node[1],destination_node[2]))

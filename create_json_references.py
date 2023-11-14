@@ -41,7 +41,7 @@ for rover in Rovers:
 neighbor_itertator = 0
 for base in Bases:
     base_name = "/" + Networks[1] + "/" + base
-    json_array.append({base_name : [{"listen port": listen_port,"send port": send_port,"address": Addresses[1]},{"neighbors" : BaseNeighborList[neighbor_itertator]}]})
+    json_array.append({base_name : [{"listen port": listen_port,"send port": send_port,"address": Addresses[1]},{"neighbors" : BaseNeighborList[neighbor_itertator]}, {"sensors": BaseSensors}]})
     listen_port += 2
     send_port += 2
     neighbor_itertator +=1
