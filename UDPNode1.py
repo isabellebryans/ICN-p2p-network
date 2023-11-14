@@ -30,7 +30,7 @@ def update(interface,router,name):
     while True:
     
         #updating every 10 seconds
-        if (interface.__class__.__name__ in ['LightSensor', 'TemperatureSensor', 'HumiditySensor', 'LiDARSensor', 'LightSensor', 'RadiationSensor', 'AtmosphericPressureSensor', 'SoilCompositionSensor', 'VolcanicActivitySensor', 'PositionSensor', 'RoverCamera', 'Battery']):
+        if (interface.__class__.__name__ in ['LightSensor', 'PowerSensor', 'TemperatureSensor', 'HumiditySensor', 'LiDARSensor', 'LightSensor', 'RadiationSensor', 'AtmosphericPressureSensor', 'SoilCompositionSensor', 'VolcanicActivitySensor', 'PositionSensor', 'RoverCamera', 'Battery']):
             interface.update()
 
     
@@ -73,7 +73,7 @@ def fresh(name, router):
 def handle_packet(router, packet,socket):
     packet = json.loads(packet.decode())
     print("packet recieved is: ", packet)
-    if packet[0] not in ["temperature", "volcanic_activity", "position", "humidity", "lidar", "pressure", "light", "soil_composition", "battery", "radiation", "camera"]:
+    if packet[0] not in ["temperature","power", "volcanic_activity", "position", "humidity", "lidar", "pressure", "light", "soil_composition", "battery", "radiation", "camera"]:
         print("ignoring packet")
         return
     need = packet[0]

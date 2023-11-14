@@ -1,4 +1,0 @@
-tmux new-session -d -s Bases
-tmux new-window -n bone
-tmux send-keys -t Bases:bash "echo Base Control"
-tmux send-keys -t Bases:bone "python3 node.py --name /bases/base1"

@@ -130,6 +130,13 @@ class RadiationSensor:
     def get_radiation_level(self):
         return self.data
 
+class PowerSensor:
+    def __init__(self):
+        self.data = None
+
+    def update(self):
+        self.data = random.uniform(0, 500)  # Radiation level in mSv
+
 
 class RoverCamera:
     def __init__(self):

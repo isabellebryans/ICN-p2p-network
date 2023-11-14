@@ -1,0 +1,32 @@
+tmux new-session -d -s Bases
+tmux new-window -n bone
+tmux new-window -n btwo
+tmux new-window -n bthree
+tmux new-window -n bfour
+tmux new-window -n bfive
+tmux new-window -d -n b1power
+tmux new-window -d -n b1position
+tmux new-window -d -n b2power
+tmux new-window -d -n b2position
+tmux new-window -d -n b3power
+tmux new-window -d -n b3position
+tmux new-window -d -n b4power
+tmux new-window -d -n b4position
+tmux new-window -d -n b5power
+tmux new-window -d -n b5position
+tmux send-keys -t Bases:bash "echo Base Control"
+tmux send-keys -t Bases:bone "python3 node.py --name /bases/base1"
+tmux send-keys -t Bases:b1power "python3 node.py --name /bases/base1/power"
+tmux send-keys -t Bases:b1position "python3 node.py --name /bases/base1/position"
+tmux send-keys -t Bases:btwo "python3 node.py --name /bases/base2"
+tmux send-keys -t Bases:b2power "python3 node.py --name /bases/base2/power"
+tmux send-keys -t Bases:b2position "python3 node.py --name /bases/base2/position"
+tmux send-keys -t Bases:bthree "python3 node.py --name /bases/base3"
+tmux send-keys -t Bases:b3power "python3 node.py --name /bases/base3/power"
+tmux send-keys -t Bases:b3position "python3 node.py --name /bases/base3/position"
+tmux send-keys -t Bases:bfour "python3 node.py --name /bases/base4"
+tmux send-keys -t Bases:b4power "python3 node.py --name /bases/base4/power"
+tmux send-keys -t Bases:b4position "python3 node.py --name /bases/base4/position"
+tmux send-keys -t Bases:bfive "python3 node.py --name /bases/base5"
+tmux send-keys -t Bases:b5power "python3 node.py --name /bases/base5/power"
+tmux send-keys -t Bases:b5position "python3 node.py --name /bases/base5/position"

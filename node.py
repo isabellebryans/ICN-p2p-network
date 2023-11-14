@@ -32,7 +32,8 @@ def instantiate_sensor(sensor_type):
         'camera': RI.RoverCamera,
         'battery': RI.Battery,
         'position': RI.PositionSensor,
-        'volcanic_activity': RI.VolcanicActivitySensor
+        'volcanic_activity': RI.VolcanicActivitySensor,
+        'power': RI.PowerSensor
     }
     return sensor_map.get(sensor_type, lambda: None)()
 
