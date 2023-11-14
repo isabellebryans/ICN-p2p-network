@@ -1,6 +1,6 @@
 import json
 
-class Routers:
+class Router:
     def __init__(self, name):
         self.multi_request = 0
         self.name = name  # device name
@@ -24,7 +24,7 @@ class Routers:
         neighbours_list = list()
         for i in range(len(load_dict)):
             device_name = list(load_dict[i].keys())[0]
-            print(device_name)
+            #print(device_name)
             if device_name == self.name:
                 neighbours_dict = load_dict[i][device_name][1]  # neighbours dictionary
                 neighbours_list = neighbours_dict[list(neighbours_dict.keys())[0]]  # neighbours list
@@ -32,7 +32,7 @@ class Routers:
                 if len(load_dict[i][device_name]) > 2:
                     sensor_dict = load_dict[i][device_name][2]
                     self.sensor_list = sensor_dict[list(sensor_dict.keys())[0]]
-                    print(self.sensor_list)
+                    print("sensor list of {} is {}".format(self.name, self.sensor_list))
 
         
 
@@ -45,7 +45,6 @@ class Routers:
                     listen_port = device_detail[list(device_detail.keys())[0]]
                     addr = device_detail[list(device_detail.keys())[2]]
                     self.setFib(device_name, addr, listen_port)
-
 
         # add sensor
         for i in range(len(load_dict)):
