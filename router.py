@@ -28,10 +28,10 @@ class Router:
                 neighbours_dict = load_dict[i][device_name][1]  # neighbours dictionary
                 neighbours_list = neighbours_dict[list(neighbours_dict.keys())[0]]  # neighbours list
                 # set list of sensors
-                if load_dict[i][device_name][2]:
+                if len(load_dict[i][device_name]) > 2:
                     sensor_dict = load_dict[i][device_name][2]
                     self.sensor_list = sensor_dict[list(sensor_dict.keys())[0]]
-                    print(sensor_list)
+                    print(self.sensor_list)
 
         
 
@@ -108,6 +108,18 @@ class Router:
 
     def getMultiRequest(self):
         return self.multi_request
+    
+    def getNeighbourRovers(self):
+        neighbour_rovers = list(tuple())
+        for k in range(len(self.fib)):
+            fib_length = len(self.fib[k][0].split('/'))
+            #print("neighbor = ", self.fib[k][0])
+            if fib_length < 4:
+                #print("neighbour being added to list of neighbour rovers")
+                neighbour_rover = self.fib[k]
+                neighbour_rovers.append(neighbour_rover)
+            # else fib element is sensor
+        return neighbour_rovers
 
     
     # The longest match between the name of the matched interest packet and the prefix in the fib,
@@ -117,7 +129,7 @@ class Router:
         resorted = list()
         # split the url with '/'
         packet_len = len(str_packet.split('/'))
-        print(str_packet)
+        #print(str_packet)
         # print(len(self.fib))
 
         # match how many strings between the packet name and fib

@@ -30,11 +30,14 @@ def update(interface,router,name):
     while True:
     
         #updating every 10 seconds
-        if (interface.__class__.__name__ in ['temperature', 'humidity', 'lidar', 'light', 'radiation', 'pressure', 'soil_composition', 'camera', 'battery']):
+        if (interface.__class__.__name__ in ['LightSensor', 'TemperatureSensor', 'HumiditySensor', 'LiDARSensor', 'LightSensor', 'RadiationSensor', 'AtmosphericPressureSensor', 'SoilCompositionSensor', 'VolcanicActivitySensor', 'PositionSensor', 'RoverCamera', 'Battery']):
             interface.update()
+
     
         #Update content store with data
+
         router.setCS(name,interface.data,time.time())
+        
         time.sleep(10)
 
 
@@ -46,10 +49,12 @@ def outbound(socket,router,lock,interface):
         interest = input('Ask the network for information: ') 
         lock.acquire()
         #Send to some neighbor given longest prefix protocol or FIB
-        neighbor = router.longestPrefix(interest)
+       # neighbor = router.longestPrefix(interest)
+        neighbor = router.getNeighbourRovers()
         packet = (interest, interface)
         router.setPit(interest,interface)
         socket.sendto(json.dumps(packet).encode(), (neighbor[len(neighbor)-1][1],neighbor[len(neighbor)-1][2]))
+        print("interest sent to ", neighbor[len(neighbor)-1][0])
         lock.release()
         #msgFromServer = socket.recvfrom(bufferSize)
         #print(msgFromServer[0].decode())
@@ -67,24 +72,54 @@ def fresh(name, router):
 
 def handle_packet(router, packet,socket):
     packet = json.loads(packet.decode())
-    name = packet[0]
+    need = packet[0]
     #Interest packet
     if len(packet) == 2:
-        interface = packet[1]
+        interface = packet[1] # where its coming from?
         print("Interest Packet Received! Interest packet is: ", packet)
-        if name in router.getCS() and fresh(name,router):
-            print("I have the Data!")
-
-            #Produce data packet name : data : freshness
+        #if need in router.getCS() and fresh(need,router):
+            #print("I have the Data!")
+        if not router.getSensors():
+            print("Sensor")
+            print("router.getCS(): ", router.getCS())
+            print("fresh(need, router): ", fresh(need, router))
+            data = router.getCS()[router.getName()]
+            packet = (need,data,router.getName())
+            print(data)
             address = router.getAddress(interface)
-            packet = (name,router.getCS()[name],0)
-            #print("Forward to " + interface)
+            print("Forward to " + interface)
+            socket.sendto(json.dumps(packet).encode(), address) 
+            return
+            if need in router.getCS(): # and fresh(need,router):
+                print("I have the Data!")
+                packet = (need,router.getCS()[need],router.getName())
+                address = router.getAddress(interface)
+                print("Forward to " + interface)
+                socket.sendto(json.dumps(packet).encode(), address) 
+            else:
+                print("error, sensor getting request that it can't fulfill")
+            return
+
+        elif need in router.getSensors():
+            print("I have the right sensor! Passing onto sensor ", need)
+            sensor_name = router.getName() + "/" + need
+            print("Sending to ", sensor_name)
+            #Produce data packet name : data : freshness
+            address = router.getAddress(sensor_name)
+            router.setPit(need,interface)
+            packet = (need, router.getLocation()[0])
             socket.sendto(json.dumps(packet).encode(), address)
+            #packet = (need,router.getCS()[need],0)
+            #print("Forward to " + interface)
+            #socket.sendto(json.dumps(packet).encode(), address)
             return
         elif packet not in router.getPit():
             print("I don't have the Data, updating PIT!")
-            router.setPit(name,interface)
+            router.setPit(need,interface)
             print("PIT ", router.getPit())
+            # send it to a neighbour, but not where the data came from
+
+
             #Forward Interest based on longest prefix
             if router.getMultiRequest() ==  2:
                 next_nodes = []
@@ -94,10 +129,10 @@ def handle_packet(router, packet,socket):
                 next_node = [random.choice(next_nodes)] 
                 router.setMultiRequest()
             else:
-                next_node = router.longestPrefix(name)
+                next_node = router.longestPrefix(need)
                 router.updateMultiRequest()
             print("Forwarding to ", next_node[len(next_node)-1]) 
-            packet = (name, router.getLocation()[0])
+            packet = (need, router.getLocation()[0])
             socket.sendto(json.dumps(packet).encode(),(next_node[len(next_node)-1][1],next_node[len(next_node)-1][2]))
             return
 
@@ -108,7 +143,7 @@ def handle_packet(router, packet,socket):
         inPit = False
         #Remove elements in PIT which contain interest
         for interest in router.getPit(): 
-            if interest[0] == name:
+            if interest[0] == need:
                 print("Satisfying interest table")
                 router.popPit(interest[0],interest[1])
                 #Send data packet to requesters
@@ -118,7 +153,7 @@ def handle_packet(router, packet,socket):
                 inPit = True
         if inPit:
             print("Updating Content store")
-            router.setCS(name,data[0],data[1])
+            router.setCS(need,data[0],data[1])
             print(router.getCS())
             return
         else:
