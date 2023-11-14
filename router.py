@@ -8,6 +8,7 @@ class Router:
         self.pit = list(tuple())  # name
         self.fib = list(tuple())  # prefix, ip address, ongoing interface
         self.location = list(tuple()) #name, address, listen port, send port
+        self.sensor_list = list()
 
         with open("interfaces.json", 'r') as load_f:
             load_dict = json.load(load_f)
@@ -22,11 +23,17 @@ class Router:
         neighbours_list = list()
         for i in range(len(load_dict)):
             device_name = list(load_dict[i].keys())[0]
-            # print(device_name)
+            print(device_name)
             if device_name == self.name:
                 neighbours_dict = load_dict[i][device_name][1]  # neighbours dictionary
                 neighbours_list = neighbours_dict[list(neighbours_dict.keys())[0]]  # neighbours list
-                # print(neighbours_list)
+                # set list of sensors
+                if load_dict[i][device_name][2]:
+                    sensor_dict = load_dict[i][device_name][2]
+                    self.sensor_list = sensor_dict[list(sensor_dict.keys())[0]]
+                    print(sensor_list)
+
+        
 
         # add neighbours into the current fib
         for neighbour_name in neighbours_list:
@@ -37,6 +44,7 @@ class Router:
                     listen_port = device_detail[list(device_detail.keys())[0]]
                     addr = device_detail[list(device_detail.keys())[2]]
                     self.setFib(device_name, addr, listen_port)
+
 
         # add sensor
         for i in range(len(load_dict)):
@@ -53,6 +61,9 @@ class Router:
 
     def getCS(self):
         return self.cs
+    
+    def getSensors(self):
+        return self.sensor_list
 
     # cache new data
     def setCS(self, name, data, freshness):

@@ -71,9 +71,10 @@ def handle_packet(router, packet,socket):
     #Interest packet
     if len(packet) == 2:
         interface = packet[1]
-        print("Interest Packet Received!")
+        print("Interest Packet Received! Interest packet is: ", packet)
         if name in router.getCS() and fresh(name,router):
             print("I have the Data!")
+
             #Produce data packet name : data : freshness
             address = router.getAddress(interface)
             packet = (name,router.getCS()[name],0)

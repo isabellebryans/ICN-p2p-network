@@ -12,11 +12,23 @@
                     "/rovers/rover1",
                     "/bases/base1"
                 ]
+            },
+            {
+                "sensors": [
+                    "position",
+                    "camera",
+                    "battery",
+                    "temperature",
+                    "humidity",
+                    "pressure",
+                    "lidar",
+                    "light"
+                ]
             }
         ]
     },
     {
-        "/rovers/rover1/temperature": [
+        "/rovers/rover1/position": [
             {
                 "listen port": 33003,
                 "send port": 33004,
@@ -30,7 +42,7 @@
         ]
     },
     {
-        "/rovers/rover1/humidity": [
+        "/rovers/rover1/camera": [
             {
                 "listen port": 33005,
                 "send port": 33006,
@@ -44,7 +56,7 @@
         ]
     },
     {
-        "/rovers/rover1/lidar": [
+        "/rovers/rover1/battery": [
             {
                 "listen port": 33007,
                 "send port": 33008,
@@ -58,7 +70,7 @@
         ]
     },
     {
-        "/rovers/rover1/pressure": [
+        "/rovers/rover1/temperature": [
             {
                 "listen port": 33009,
                 "send port": 33010,
@@ -72,7 +84,7 @@
         ]
     },
     {
-        "/rovers/rover1/light": [
+        "/rovers/rover1/humidity": [
             {
                 "listen port": 33011,
                 "send port": 33012,
@@ -86,7 +98,7 @@
         ]
     },
     {
-        "/rovers/rover1/soil_composition": [
+        "/rovers/rover1/pressure": [
             {
                 "listen port": 33013,
                 "send port": 33014,
@@ -100,7 +112,7 @@
         ]
     },
     {
-        "/rovers/rover1/battery": [
+        "/rovers/rover1/lidar": [
             {
                 "listen port": 33015,
                 "send port": 33016,
@@ -114,7 +126,7 @@
         ]
     },
     {
-        "/rovers/rover1/radiation": [
+        "/rovers/rover1/light": [
             {
                 "listen port": 33017,
                 "send port": 33018,
@@ -128,7 +140,7 @@
         ]
     },
     {
-        "/rovers/rover1/camera": [
+        "/rovers/rover2": [
             {
                 "listen port": 33019,
                 "send port": 33020,
@@ -136,13 +148,26 @@
             },
             {
                 "neighbors": [
-                    "/rovers/rover1"
+                    "/rovers/rover1",
+                    "/rovers/rover3"
+                ]
+            },
+            {
+                "sensors": [
+                    "position",
+                    "camera",
+                    "battery",
+                    "temperature",
+                    "humidity",
+                    "pressure",
+                    "volcanic_activity",
+                    "soil_composition"
                 ]
             }
         ]
     },
     {
-        "/rovers/rover2": [
+        "/rovers/rover2/position": [
             {
                 "listen port": 33021,
                 "send port": 33022,
@@ -150,14 +175,13 @@
             },
             {
                 "neighbors": [
-                    "/rovers/rover1",
-                    "/rovers/rover3"
+                    "/rovers/rover2"
                 ]
             }
         ]
     },
     {
-        "/rovers/rover2/temperature": [
+        "/rovers/rover2/camera": [
             {
                 "listen port": 33023,
                 "send port": 33024,
@@ -171,7 +195,7 @@
         ]
     },
     {
-        "/rovers/rover2/humidity": [
+        "/rovers/rover2/battery": [
             {
                 "listen port": 33025,
                 "send port": 33026,
@@ -185,7 +209,7 @@
         ]
     },
     {
-        "/rovers/rover2/lidar": [
+        "/rovers/rover2/temperature": [
             {
                 "listen port": 33027,
                 "send port": 33028,
@@ -199,7 +223,7 @@
         ]
     },
     {
-        "/rovers/rover2/pressure": [
+        "/rovers/rover2/humidity": [
             {
                 "listen port": 33029,
                 "send port": 33030,
@@ -213,7 +237,7 @@
         ]
     },
     {
-        "/rovers/rover2/light": [
+        "/rovers/rover2/pressure": [
             {
                 "listen port": 33031,
                 "send port": 33032,
@@ -227,7 +251,7 @@
         ]
     },
     {
-        "/rovers/rover2/soil_composition": [
+        "/rovers/rover2/volcanic_activity": [
             {
                 "listen port": 33033,
                 "send port": 33034,
@@ -241,7 +265,7 @@
         ]
     },
     {
-        "/rovers/rover2/battery": [
+        "/rovers/rover2/soil_composition": [
             {
                 "listen port": 33035,
                 "send port": 33036,
@@ -255,7 +279,7 @@
         ]
     },
     {
-        "/rovers/rover2/radiation": [
+        "/rovers/rover3": [
             {
                 "listen port": 33037,
                 "send port": 33038,
@@ -263,13 +287,26 @@
             },
             {
                 "neighbors": [
-                    "/rovers/rover2"
+                    "/rovers/rover2",
+                    "/rovers/rover4"
+                ]
+            },
+            {
+                "sensors": [
+                    "position",
+                    "camera",
+                    "battery",
+                    "temperature",
+                    "humidity",
+                    "pressure",
+                    "radiation",
+                    "volcanic_activity"
                 ]
             }
         ]
     },
     {
-        "/rovers/rover2/camera": [
+        "/rovers/rover3/position": [
             {
                 "listen port": 33039,
                 "send port": 33040,
@@ -277,13 +314,13 @@
             },
             {
                 "neighbors": [
-                    "/rovers/rover2"
+                    "/rovers/rover3"
                 ]
             }
         ]
     },
     {
-        "/rovers/rover3": [
+        "/rovers/rover3/camera": [
             {
                 "listen port": 33041,
                 "send port": 33042,
@@ -291,14 +328,13 @@
             },
             {
                 "neighbors": [
-                    "/rovers/rover2",
-                    "/rovers/rover4"
+                    "/rovers/rover3"
                 ]
             }
         ]
     },
     {
-        "/rovers/rover3/temperature": [
+        "/rovers/rover3/battery": [
             {
                 "listen port": 33043,
                 "send port": 33044,
@@ -312,7 +348,7 @@
         ]
     },
     {
-        "/rovers/rover3/humidity": [
+        "/rovers/rover3/temperature": [
             {
                 "listen port": 33045,
                 "send port": 33046,
@@ -326,7 +362,7 @@
         ]
     },
     {
-        "/rovers/rover3/lidar": [
+        "/rovers/rover3/humidity": [
             {
                 "listen port": 33047,
                 "send port": 33048,
@@ -354,7 +390,7 @@
         ]
     },
     {
-        "/rovers/rover3/light": [
+        "/rovers/rover3/radiation": [
             {
                 "listen port": 33051,
                 "send port": 33052,
@@ -368,7 +404,7 @@
         ]
     },
     {
-        "/rovers/rover3/soil_composition": [
+        "/rovers/rover3/volcanic_activity": [
             {
                 "listen port": 33053,
                 "send port": 33054,
@@ -382,7 +418,7 @@
         ]
     },
     {
-        "/rovers/rover3/battery": [
+        "/rovers/rover4": [
             {
                 "listen port": 33055,
                 "send port": 33056,
@@ -390,13 +426,27 @@
             },
             {
                 "neighbors": [
-                    "/rovers/rover3"
+                    "/rovers/rover3",
+                    "/rovers/rover5",
+                    "/bases/base1"
+                ]
+            },
+            {
+                "sensors": [
+                    "position",
+                    "camera",
+                    "battery",
+                    "temperature",
+                    "pressure",
+                    "lidar",
+                    "light",
+                    "radiation"
                 ]
             }
         ]
     },
     {
-        "/rovers/rover3/radiation": [
+        "/rovers/rover4/position": [
             {
                 "listen port": 33057,
                 "send port": 33058,
@@ -404,13 +454,13 @@
             },
             {
                 "neighbors": [
-                    "/rovers/rover3"
+                    "/rovers/rover4"
                 ]
             }
         ]
     },
     {
-        "/rovers/rover3/camera": [
+        "/rovers/rover4/camera": [
             {
                 "listen port": 33059,
                 "send port": 33060,
@@ -418,13 +468,13 @@
             },
             {
                 "neighbors": [
-                    "/rovers/rover3"
+                    "/rovers/rover4"
                 ]
             }
         ]
     },
     {
-        "/rovers/rover4": [
+        "/rovers/rover4/battery": [
             {
                 "listen port": 33061,
                 "send port": 33062,
@@ -432,9 +482,7 @@
             },
             {
                 "neighbors": [
-                    "/rovers/rover3",
-                    "/rovers/rover5",
-                    "/bases/base1"
+                    "/rovers/rover4"
                 ]
             }
         ]
@@ -454,7 +502,7 @@
         ]
     },
     {
-        "/rovers/rover4/humidity": [
+        "/rovers/rover4/pressure": [
             {
                 "listen port": 33065,
                 "send port": 33066,
@@ -482,7 +530,7 @@
         ]
     },
     {
-        "/rovers/rover4/pressure": [
+        "/rovers/rover4/light": [
             {
                 "listen port": 33069,
                 "send port": 33070,
@@ -496,7 +544,7 @@
         ]
     },
     {
-        "/rovers/rover4/light": [
+        "/rovers/rover4/radiation": [
             {
                 "listen port": 33071,
                 "send port": 33072,
@@ -510,7 +558,7 @@
         ]
     },
     {
-        "/rovers/rover4/soil_composition": [
+        "/rovers/rover5": [
             {
                 "listen port": 33073,
                 "send port": 33074,
@@ -518,13 +566,26 @@
             },
             {
                 "neighbors": [
-                    "/rovers/rover4"
+                    "/rovers/rover4",
+                    "/rovers/rover1"
+                ]
+            },
+            {
+                "sensors": [
+                    "position",
+                    "camera",
+                    "battery",
+                    "humidity",
+                    "pressure",
+                    "soil_composition",
+                    "lidar",
+                    "light"
                 ]
             }
         ]
     },
     {
-        "/rovers/rover4/battery": [
+        "/rovers/rover5/position": [
             {
                 "listen port": 33075,
                 "send port": 33076,
@@ -532,13 +593,13 @@
             },
             {
                 "neighbors": [
-                    "/rovers/rover4"
+                    "/rovers/rover5"
                 ]
             }
         ]
     },
     {
-        "/rovers/rover4/radiation": [
+        "/rovers/rover5/camera": [
             {
                 "listen port": 33077,
                 "send port": 33078,
@@ -546,13 +607,13 @@
             },
             {
                 "neighbors": [
-                    "/rovers/rover4"
+                    "/rovers/rover5"
                 ]
             }
         ]
     },
     {
-        "/rovers/rover4/camera": [
+        "/rovers/rover5/battery": [
             {
                 "listen port": 33079,
                 "send port": 33080,
@@ -560,13 +621,13 @@
             },
             {
                 "neighbors": [
-                    "/rovers/rover4"
+                    "/rovers/rover5"
                 ]
             }
         ]
     },
     {
-        "/rovers/rover5": [
+        "/rovers/rover5/humidity": [
             {
                 "listen port": 33081,
                 "send port": 33082,
@@ -574,14 +635,13 @@
             },
             {
                 "neighbors": [
-                    "/rovers/rover4",
-                    "/rovers/rover1"
+                    "/rovers/rover5"
                 ]
             }
         ]
     },
     {
-        "/rovers/rover5/temperature": [
+        "/rovers/rover5/pressure": [
             {
                 "listen port": 33083,
                 "send port": 33084,
@@ -595,7 +655,7 @@
         ]
     },
     {
-        "/rovers/rover5/humidity": [
+        "/rovers/rover5/soil_composition": [
             {
                 "listen port": 33085,
                 "send port": 33086,
@@ -623,7 +683,7 @@
         ]
     },
     {
-        "/rovers/rover5/pressure": [
+        "/rovers/rover5/light": [
             {
                 "listen port": 33089,
                 "send port": 33090,
@@ -637,80 +697,10 @@
         ]
     },
     {
-        "/rovers/rover5/light": [
+        "/bases/base1": [
             {
                 "listen port": 33091,
                 "send port": 33092,
-                "address": "10.35.70.1"
-            },
-            {
-                "neighbors": [
-                    "/rovers/rover5"
-                ]
-            }
-        ]
-    },
-    {
-        "/rovers/rover5/soil_composition": [
-            {
-                "listen port": 33093,
-                "send port": 33094,
-                "address": "10.35.70.1"
-            },
-            {
-                "neighbors": [
-                    "/rovers/rover5"
-                ]
-            }
-        ]
-    },
-    {
-        "/rovers/rover5/battery": [
-            {
-                "listen port": 33095,
-                "send port": 33096,
-                "address": "10.35.70.1"
-            },
-            {
-                "neighbors": [
-                    "/rovers/rover5"
-                ]
-            }
-        ]
-    },
-    {
-        "/rovers/rover5/radiation": [
-            {
-                "listen port": 33097,
-                "send port": 33098,
-                "address": "10.35.70.1"
-            },
-            {
-                "neighbors": [
-                    "/rovers/rover5"
-                ]
-            }
-        ]
-    },
-    {
-        "/rovers/rover5/camera": [
-            {
-                "listen port": 33099,
-                "send port": 33100,
-                "address": "10.35.70.1"
-            },
-            {
-                "neighbors": [
-                    "/rovers/rover5"
-                ]
-            }
-        ]
-    },
-    {
-        "/bases/base1": [
-            {
-                "listen port": 33101,
-                "send port": 33102,
                 "address": "10.35.70.9"
             },
             {
