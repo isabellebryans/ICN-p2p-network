@@ -4,6 +4,11 @@ from UDPNode1 import p2p_node
 from router import Router
 import Interfaces as RI #roverInterfaces
 
+from Crypto.Random import get_random_bytes
+
+def generate_aes_key(key_size=32):  # AES-256
+    return get_random_bytes(key_size)
+
 def initialize_position():
     # Random position generation for rover
     return [random.randint(0, 500), random.randint(0, 500), random.randint(0, 200)]
@@ -54,7 +59,9 @@ if __name__ == "__main__":
         print("Node identifier is required.")
         exit(1)
 
-    com_router = Router(args.name)
+    key = generate_aes_key() #generate AES KEY for encryption used here
+    com_router = Router(args.name,key)
     node_entity = create_sensor_or_rover(args.name)
-    mars_node = p2p_node(args.name, com_router, node_entity)
+    # (?) added keys to p2p node as an argument
+    mars_node = p2p_node(args.name, com_router, node_entity,key)
     mars_node.run()

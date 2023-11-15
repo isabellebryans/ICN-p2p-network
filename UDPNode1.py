@@ -5,6 +5,10 @@ import json
 import Interfaces
 import time
 
+from Crypto.Util.Padding import unpad
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad
+
 bufferSize  = 1024
 file = open('interfaces.json')
 references = json.load(file)
@@ -17,6 +21,19 @@ def find_node(name):
         if(name == list(references[i].keys())[0]):
             return i
     print("can't find node ", name)
+
+# Encryption added
+def encrypt_message(message, key):
+    cipher = AES.new(key, AES.MODE_CBC)
+    ct_bytes = cipher.encrypt(pad(message.encode(), AES.block_size))
+    return cipher.iv + ct_bytes  # Prepend IV to the encrypted message
+
+#decryption of the messages
+def decrypt_message(encrypted_message,key):
+        iv = encrypted_message[:AES.block_size]  # Extract the IV from the beginning
+        cipher = AES.new(key, AES.MODE_CBC, iv)
+        pt = unpad(cipher.decrypt(encrypted_message[AES.block_size:]), AES.block_size)
+        return pt.decode()
 
 
 ########### Setup #########
@@ -43,7 +60,7 @@ def update(interface,router,name):
 
 ########## Outbound #############
 # Send interest packet
-def outbound(socket,router,lock,node):
+def outbound(socket,router,lock,node,key):
     while True:
         interest = input('Ask the network for information: ') 
         lock.acquire()
@@ -51,9 +68,11 @@ def outbound(socket,router,lock,node):
         neighbor = random.choice( router.getNeighbourRovers())
         # Include the interest and the origin of the interest request
         packet = (interest, node)
+        encrypted_packet = encrypt_message(json.dumps(packet),key)
         # Set the PIT 
         router.setPit(interest, node)
-        socket.sendto(json.dumps(packet).encode(), (neighbor[1],neighbor[2]))
+        # (?) removed encrypted_packet.encode() to be encrypted_packet
+        socket.sendto(encrypted_packet, (neighbor[1],neighbor[2]))
         print("Interest {} sent to {}.".format(interest, neighbor))
         lock.release()
 
@@ -82,22 +101,26 @@ def update_position(router):
     return
 
 # Handle Income Data Packet
-def handle_packet(router, packet, socket):
+def handle_packet(router, packet, socket,key):
     # decode packet
     packet = json.loads(packet.decode())
-    print("Packet recieved is: ", packet)
+    # (?) changed packet to decrypt_packet 
+    decrypt_packet = decrypt_message(packet,key)
+    print("Packet recieved is: ", decrypt_packet)
 
     # Data sent from another group
-    if packet[0] not in AttributeList:
+
+    # Can also substitute that long list with AttributeList(?)
+    if decrypt_packet[0] not in ["temperature", "volcanic_activity", "position", "humidity", "lidar", "pressure", "light", "soil_composition", "battery", "radiation", "camera"]:
         print("Ignoring packet")
         return
     
-    need = packet[0]
+    need = decrypt_packet[0]
     # INTEREST PACKET
-    if len(packet) == 2:
-        origin_node = packet[1] # origin
+    if len(decrypt_packet) == 2:
+        origin_node = decrypt_packet[1] # origin
 
-        print("Interest Packet Received! Interest packet is: ", packet)
+        print("Interest Packet Received! Interest packet is: ", decrypt_packet)
         # If need in router.getCS() and fresh(need,router):
             #print("I have the Data!")
         
@@ -108,13 +131,13 @@ def handle_packet(router, packet, socket):
             print("router.getCS(): ", router.getCS())
             # Get the data from the sensors CS
             data = router.getCS()[router.getName()]
-            packet = (need,data,router.getName())
+            decrypt_packet = (need,data,router.getName())
             #print(data)
             # Get the address of the node that sent you the packet to sent it back
             address = router.getAddress(origin_node)
             # Sent data back to node that requested data
             print("Forward to " + origin_node)
-            socket.sendto(json.dumps(packet).encode(), address) 
+            socket.sendto(json.dumps(decrypt_packet).encode(), address) 
             return
         
         elif need in router.getCS() and fresh(need,router):
@@ -122,9 +145,9 @@ def handle_packet(router, packet, socket):
             #Produce data packet name : data : freshness
             address = router.getAddress(origin_node)
             # need to change this to store location of where the data was gotten
-            packet = (need,router.getCS()[need],origin_node)
+            decrypt_packet = (need,router.getCS()[need],origin_node)
             # print("Forward to " + interface)
-            socket.sendto(json.dumps(packet).encode(), address)
+            socket.sendto(json.dumps(decrypt_packet).encode(), address)
             return
             
         # Node is not a sensor, but has the sensor needed
@@ -139,13 +162,13 @@ def handle_packet(router, packet, socket):
             router.setPit(need,origin_node)
             print("Updated pit. PIT: ", router.getPit())
             # Create data packet
-            packet = (need, router.getLocation()[0])
+            decrypt_packet = (need, router.getLocation()[0])
             print("Forward to " + sensor_name)
-            socket.sendto(json.dumps(packet).encode(), address)
+            socket.sendto(json.dumps(decrypt_packet).encode(), address)
             return
         # Node does not have the sensor requires
-        # Pass the data packet onto the next sensor
-        elif packet not in router.getPit():
+        # Pass the data decrypt_packet onto the next sensor
+        elif decrypt_packet not in router.getPit():
             print("I don't have the Data, sending on packet")
             # update pit
             router.setPit(need,origin_node)
@@ -166,15 +189,15 @@ def handle_packet(router, packet, socket):
                 destination_node = random.choice(destination_node)
             else:
                 destination_node = destination_node[0]
-            packet = (need, router.getLocation()[0])
+            decrypt_packet = (need, router.getLocation()[0])
             print("Forwarding to ", destination_node)
-            socket.sendto(json.dumps(packet).encode(),(destination_node[1],destination_node[2]))
+            socket.sendto(json.dumps(decrypt_packet).encode(),(destination_node[1],destination_node[2]))
             return
 
     # DATA PACKET
     else:
         print("Data packet Received!")
-        data = packet[1]
+        data = decrypt_packet[1]
         inPit = False
         #Remove elements in PIT which contain interest
         for interest in router.getPit(): 
@@ -186,13 +209,13 @@ def handle_packet(router, packet, socket):
                 # Send data packet back to requesters
                 if interest[1] != router.name:
                     address = router.getAddress(interest[1])
-                    socket.sendto(json.dumps(packet).encode(), address)
+                    socket.sendto(json.dumps(decrypt_packet).encode(), address)
                 inPit = True
         if inPit:
             print("Popped from PIT. New PIT: ", router.getPit())
             print("Updating Content store")
             print("adding data: ", data)
-            print("packet: ", packet)
+            print("packet: ", decrypt_packet)
         
             router.setCS(need,data[0],data[1])
             print("CS is now: ", router.getCS())
@@ -204,17 +227,18 @@ def handle_packet(router, packet, socket):
     return
 
 # Listen for incoming datagrams
-def inbound(socket,name,lock,router):
+def inbound(socket,name,lock,router,key):
     while(True):
         bytesAddressPair = socket.recvfrom(bufferSize)
         lock.acquire()
         message = bytesAddressPair[0]
-        handle_packet(router,message,socket)
+        # (?) key being passed into the handle_packet
+        handle_packet(router,message,socket,key)
         lock.release()
 
 
 class p2p_node():
-    def __init__(self,name,router,interface):
+    def __init__(self,name,router,interface,key):
         #Interface name
         self.name = name
 
@@ -231,13 +255,17 @@ class p2p_node():
         self.listen_port = network_details[0]["listen port"]
         self.send_port = network_details[0]["send port"]
         self.address = network_details[0]["address"]
+        # (?) added key to p2pnode initiation
+        self.key = key
     
     def run(self):
         #setup inbound and outbound ports
-        s_inbound,s_outbound = setup_sockets(self.listen_port,self.send_port)
+        s_inbound,s_outbound, key = setup_sockets(self.listen_port,self.send_port,self.key)
         # creating thread
-        t1 = threading.Thread(target=inbound, args=(s_inbound,self.name,self.lock,self.router))
-        t2 = threading.Thread(target=outbound, args=(s_outbound,self.router,self.lock,self.name))
+
+        # (?) added key to the threads
+        t1 = threading.Thread(target=inbound, args=(s_inbound,self.name,self.lock,self.router,key))
+        t2 = threading.Thread(target=outbound, args=(s_outbound,self.router,self.lock,self.name,key))
         t3 = threading.Thread(target=update, args=(self.interface,self.router,self.name))
 
         # starting thread 1
