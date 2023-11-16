@@ -1,4 +1,4 @@
-# p2p name-defined-network
+# P2P network overlay using Information Centric Networking Protocols (NDN)
 
 On Pi 1 Cd into the project folder.<br />
 Run the command:  source .tmux/ndn-rovers <br />
