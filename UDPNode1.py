@@ -2,7 +2,6 @@ import socket
 import threading
 import random
 import json
-import Interfaces
 import time
 
 bufferSize  = 1024
@@ -20,7 +19,6 @@ SensorList = ['RepairKit','LightSensor', 'PowerSensor', 'TemperatureSensor', 'Hu
 
 
 # When a rover fails.
-# 
 
 #Finds the node with the given name in the reference json and returns its index
 def find_node(name):
@@ -100,7 +98,6 @@ def outbound(socket,router,lock,node):
     while Alive:
         interest = input('Ask the network for information: ') 
         if interest == "Fail":
-            #global Alive
             Alive = False
             print("Node dead. Alive is: ", Alive)
             exit(1)
@@ -110,6 +107,11 @@ def outbound(socket,router,lock,node):
         # Include the interest and the origin of the interest request
         packet = (interest, node)
         # Set the PIT 
+        
+        if len(interest.split("/")) == 4:
+            # interest includes rover/base to get it from
+            interest = interest.split("/")[3]
+
         router.setPit(interest, node)
         socket.sendto(json.dumps(packet).encode(), (neighbor[1],neighbor[2]))
         print("Interest {} sent to {}.".format(interest, neighbor))
@@ -142,11 +144,21 @@ def handle_packet(router, packet, socket):
         print("Ignoring packet")
         return
     
-    if packet[0] not in AttributeList:
+    network = 'none'
+    desired_sensor = packet[0]
+    if len(packet[0].split("/")) == 4:
+        # interest includes rover/base to get it from
+        need = packet[0].split("/")[3]
+        network = packet[0].split("/")[1]
+    else:
+        need = packet[0]
+
+    if need not in AttributeList:
         print("Ignoring packet")
         return
+    
+    
 
-    need = packet[0]
     # INTEREST PACKET
     if len(packet) == 2:
         origin_node = packet[1] # origin
@@ -156,10 +168,21 @@ def handle_packet(router, packet, socket):
             #print("I have the Data!")
         
         current_interface = router.getName()
-        
+
+        for neighbour in router.getFib():
+            if len(neighbour[0].split("/")) == 4 and neighbour[0] == desired_sensor:
+                router.setPit(need,origin_node)
+                #print("Updated pit. PIT: ", router.getPit())
+                address = router.getAddress(desired_sensor)
+                packet = (desired_sensor, router.getLocation()[0])
+                #print("Forward to " + desired_sensor)
+                socket.sendto(json.dumps(packet).encode(), address)
+                return
+                
+
         # Sensor
         if len(current_interface.split("/")) == 4:      # If the node is a sensor
-            print("router.getCS(): ", router.getCS())
+            #print("router.getCS(): ", router.getCS())
             # Get the data from the sensors CS
             # data = (data, time)
             data = router.getCS()[router.getName()]
@@ -170,7 +193,7 @@ def handle_packet(router, packet, socket):
             # Sent data back to node that requested data
             print("Forward to " + origin_node)
             print(packet)
-            print(type(packet))
+            #print(type(packet))
             socket.sendto(json.dumps(packet).encode(), address) 
             return
         
@@ -178,23 +201,24 @@ def handle_packet(router, packet, socket):
             print("I have the Data!")
             #Produce data packet name : data : freshness
             address = router.getAddress(origin_node)
-            # need to change this to store location of where the data was gotten
+            
             packet = (need,router.getCS()[need],origin_node)
             # print("Forward to " + interface)
             socket.sendto(json.dumps(packet).encode(), address)
             return
             
         # Node is not a sensor, but has the sensor needed
-        elif need in router.getSensors():
-            print("I have the right sensor!")
+        # and sensor is not specific to a rover/base
+        elif need in router.getSensors() and len(packet[0].split("/")) != 4:
+            #print("I have the right sensor!")
             # Get sensor name 
             sensor_name = router.getName() + "/" + need
-            print("Sending interest packet to sensor ", sensor_name)
+            #print("Sending interest packet to sensor ", sensor_name)
             # Get address of sensor
             address = router.getAddress(sensor_name)
             # Set the PIT
             router.setPit(need,origin_node)
-            print("Updated pit. PIT: ", router.getPit())
+            #print("Updated pit. PIT: ", router.getPit())
             # Create data packet
             packet = (need, router.getLocation()[0])
             print("Forward to " + sensor_name)
@@ -205,27 +229,31 @@ def handle_packet(router, packet, socket):
         # Node does not have the sensor requires
         # Pass the data packet onto the next sensor
         elif packet not in router.getPit():
-            print("I don't have the Data, sending on packet")
+            #print("I don't have the Data, sending on packet")
             # update pit
             router.setPit(need,origin_node)
-            print("Updated pit. PIT: ", router.getPit())
+            #print("Updated pit. PIT: ", router.getPit())
             # send it to a neighbour rover node, but not where the data came from
             neighbors = router.getNeighbourRovers()
-            print("Node's rover neighbours: ", neighbors)
+            #print("Node's rover neighbours: ", neighbors)
             destination_node=[] # possible next destination nodes to send the packet onto
             # Filter out "neighbours" that are this node itself, and Bases
             # Don't want to send it to bases yet because haven't implemented that part yet
 
             for neighbor in neighbors:
                 if neighbor[0] != origin_node:
-                    destination_node.append(neighbor)
-            print("destination nodes: ", destination_node)
+                    if network != 'none':
+                        if neighbor[0].split("/")[1] == network:
+                            destination_node.append(neighbor)
+                    else:
+                        destination_node.append(neighbor)
+            #print("destination nodes: ", destination_node)
             # choose a random one if there are more than one
             if len(destination_node) >1:
                 destination_node = random.choice(destination_node)
             else:
                 destination_node = destination_node[0]
-            packet = (need, router.getLocation()[0])
+            packet = (desired_sensor, router.getLocation()[0])
             print("Forwarding to ", destination_node)
             socket.sendto(json.dumps(packet).encode(),(destination_node[1],destination_node[2]))
             return
@@ -242,7 +270,7 @@ def handle_packet(router, packet, socket):
                 router.setCS(need,data[0],data[1])
                 return
             # Add position data
-            print("CS is: ", router.getCS())
+            #print("CS is: ", router.getCS())
             position = router.getCS()['position'][0]
             data = (data, position)
 
@@ -251,7 +279,7 @@ def handle_packet(router, packet, socket):
         for item in router.getWaitingList():
             if item[0] == packet[2]:
                 router.popWaitingList(item[0], item[1])
-                print("Deleting item from WaitingList. WaitingList: ", router.getWaitingList())
+                #print("Deleting item from WaitingList. WaitingList: ", router.getWaitingList())
                 
         #Remove elements in PIT which contain interest
         for interest in router.getPit(): 
@@ -266,10 +294,10 @@ def handle_packet(router, packet, socket):
                     socket.sendto(json.dumps(packet).encode(), address)
                 inPit = True
         if inPit:
-            print("Popped from PIT. New PIT: ", router.getPit())
-            print("Updating Content store")
-            print("adding data: ", data)
-            print("packet: ", packet)
+            #print("Popped from PIT. New PIT: ", router.getPit())
+            #print("Updating Content store")
+            #print("adding data: ", data)
+            #print("packet: ", packet)
         
             router.setCS(need,data[0],data[1])
             print("CS is now: ", router.getCS())
