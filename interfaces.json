@@ -716,7 +716,8 @@
             {
                 "sensors": [
                     "power",
-                    "position"
+                    "position",
+                    "repair_kit"
                 ]
             }
         ]
@@ -750,10 +751,24 @@
         ]
     },
     {
-        "/bases/base2": [
+        "/bases/base1/repair_kit": [
             {
                 "listen port": 33097,
                 "send port": 33098,
+                "address": "10.35.70.9"
+            },
+            {
+                "neighbors": [
+                    "/bases/base1"
+                ]
+            }
+        ]
+    },
+    {
+        "/bases/base2": [
+            {
+                "listen port": 33099,
+                "send port": 33100,
                 "address": "10.35.70.9"
             },
             {
@@ -774,20 +789,6 @@
     {
         "/bases/base2/power": [
             {
-                "listen port": 33099,
-                "send port": 33100,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/bases/base2"
-                ]
-            }
-        ]
-    },
-    {
-        "/bases/base2/position": [
-            {
                 "listen port": 33101,
                 "send port": 33102,
                 "address": "10.35.70.9"
@@ -800,10 +801,24 @@
         ]
     },
     {
-        "/bases/base3": [
+        "/bases/base2/position": [
             {
                 "listen port": 33103,
                 "send port": 33104,
+                "address": "10.35.70.9"
+            },
+            {
+                "neighbors": [
+                    "/bases/base2"
+                ]
+            }
+        ]
+    },
+    {
+        "/bases/base3": [
+            {
+                "listen port": 33105,
+                "send port": 33106,
                 "address": "10.35.70.9"
             },
             {
@@ -816,27 +831,14 @@
             {
                 "sensors": [
                     "power",
-                    "position"
+                    "position",
+                    "repair_kit"
                 ]
             }
         ]
     },
     {
         "/bases/base3/power": [
-            {
-                "listen port": 33105,
-                "send port": 33106,
-                "address": "10.35.70.9"
-            },
-            {
-                "neighbors": [
-                    "/bases/base3"
-                ]
-            }
-        ]
-    },
-    {
-        "/bases/base3/position": [
             {
                 "listen port": 33107,
                 "send port": 33108,
@@ -850,10 +852,38 @@
         ]
     },
     {
-        "/bases/base4": [
+        "/bases/base3/position": [
             {
                 "listen port": 33109,
                 "send port": 33110,
+                "address": "10.35.70.9"
+            },
+            {
+                "neighbors": [
+                    "/bases/base3"
+                ]
+            }
+        ]
+    },
+    {
+        "/bases/base3/repair_kit": [
+            {
+                "listen port": 33111,
+                "send port": 33112,
+                "address": "10.35.70.9"
+            },
+            {
+                "neighbors": [
+                    "/bases/base3"
+                ]
+            }
+        ]
+    },
+    {
+        "/bases/base4": [
+            {
+                "listen port": 33113,
+                "send port": 33114,
                 "address": "10.35.70.9"
             },
             {
@@ -874,8 +904,8 @@
     {
         "/bases/base4/power": [
             {
-                "listen port": 33111,
-                "send port": 33112,
+                "listen port": 33115,
+                "send port": 33116,
                 "address": "10.35.70.9"
             },
             {
@@ -888,8 +918,8 @@
     {
         "/bases/base4/position": [
             {
-                "listen port": 33113,
-                "send port": 33114,
+                "listen port": 33117,
+                "send port": 33118,
                 "address": "10.35.70.9"
             },
             {
@@ -902,8 +932,8 @@
     {
         "/bases/base5": [
             {
-                "listen port": 33115,
-                "send port": 33116,
+                "listen port": 33119,
+                "send port": 33120,
                 "address": "10.35.70.9"
             },
             {
@@ -916,7 +946,8 @@
             {
                 "sensors": [
                     "power",
-                    "position"
+                    "position",
+                    "repair_kit"
                 ]
             }
         ]
@@ -924,8 +955,8 @@
     {
         "/bases/base5/power": [
             {
-                "listen port": 33117,
-                "send port": 33118,
+                "listen port": 33121,
+                "send port": 33122,
                 "address": "10.35.70.9"
             },
             {
@@ -938,8 +969,22 @@
     {
         "/bases/base5/position": [
             {
-                "listen port": 33119,
-                "send port": 33120,
+                "listen port": 33123,
+                "send port": 33124,
+                "address": "10.35.70.9"
+            },
+            {
+                "neighbors": [
+                    "/bases/base5"
+                ]
+            }
+        ]
+    },
+    {
+        "/bases/base5/repair_kit": [
+            {
+                "listen port": 33125,
+                "send port": 33126,
                 "address": "10.35.70.9"
             },
             {

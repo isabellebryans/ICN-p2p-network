@@ -9,6 +9,7 @@ class Router:
         self.fib = list(tuple())  # prefix, ip address, ongoing interface
         self.location = list(tuple()) #name, address, listen port, send port
         self.sensor_list = list()
+        self.WaitingList = list(tuple()) # sensor name, time
       
 
         with open("interfaces.json", 'r') as load_f:
@@ -64,6 +65,16 @@ class Router:
     
     def getSensors(self):
         return self.sensor_list
+    
+    def getWaitingList(self):
+        return self.WaitingList
+    
+    def setWaitingList(self, sensor, time):
+        self.WaitingList.append((sensor, time))
+        return
+        
+    def popWaitingList(self,name,interface):
+        self.WaitingList.remove((name,interface))
 
     # cache new data
     def setCS(self, name, data, freshness):

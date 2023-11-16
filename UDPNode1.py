@@ -8,8 +8,8 @@ import time
 bufferSize  = 1024
 file = open('interfaces.json')
 references = json.load(file)
-
-AttributeList = ["temperature","power", "volcanic_activity", "position", "humidity", "lidar", "pressure", "light", "soil_composition", "battery", "radiation", "camera"]
+Alive = True
+AttributeList = ["repair_kit", "temperature","power", "volcanic_activity", "position", "humidity", "lidar", "pressure", "light", "soil_composition", "battery", "radiation", "camera"]
 
 #Finds the node with the given name in the reference json and returns its index
 def find_node(name):
@@ -29,23 +29,41 @@ def setup_sockets(listen_port,send_port):
     return listen_socket,send_socket
 
 ########## Update ##############
-def update(interface,router,name):
-    while True:
-                
+def update(socket, interface,router,name):
+    while Alive:
         # If sensor, update every 10 seconds
         if (interface.__class__.__name__ in ['LightSensor', 'PowerSensor', 'TemperatureSensor', 'HumiditySensor', 'LiDARSensor', 'LightSensor', 'RadiationSensor', 'AtmosphericPressureSensor', 'SoilCompositionSensor', 'VolcanicActivitySensor', 'PositionSensor', 'RoverCamera', 'Battery']):
             interface.update()
             #Update content store with data
             router.setCS(name,interface.data,time.time())
+        else:
+            for item in router.getWaitingList():
+                if (float(time.time() - item[1])) > 10.0:
+                    print("Sensor down!")
+                    interest = 'repair_kit'
+                    # Get neighbours of the node that are rovers, and choose randomly which one to send it to
+                    neighbor = random.choice( router.getNeighbourRovers())
+                    # Include the interest and the origin of the interest request
+                    packet = (interest, name)
+                    # Set the PIT 
+                    router.setPit(interest, name)
+                    socket.sendto(json.dumps(packet).encode(), (neighbor[1],neighbor[2]))
+                    print("Interest {} sent to {}.".format(interest, neighbor))
+                    router.popWaitingList(item[0], item[1])
         time.sleep(10)
+
 
 
 
 ########## Outbound #############
 # Send interest packet
 def outbound(socket,router,lock,node):
-    while True:
+    while Alive:
         interest = input('Ask the network for information: ') 
+        if interest == "Fail":
+            Alive = False
+            print("Node dead. Alive is: ", Alive)
+            break
         lock.acquire()
         # Get neighbours of the node that are rovers, and choose randomly which one to send it to
         neighbor = random.choice( router.getNeighbourRovers())
@@ -56,6 +74,7 @@ def outbound(socket,router,lock,node):
         socket.sendto(json.dumps(packet).encode(), (neighbor[1],neighbor[2]))
         print("Interest {} sent to {}.".format(interest, neighbor))
         lock.release()
+        
 
 
 ########## Inbound ##############
@@ -85,13 +104,17 @@ def update_position(router):
 def handle_packet(router, packet, socket):
     # decode packet
     packet = json.loads(packet.decode())
-    print("Packet recieved is: ", packet)
-
+    #print("Packet recieved is: ", packet)
+    #print(len(packet))
     # Data sent from another group
-    if packet[0] not in AttributeList:
+    if not isinstance(packet, list):
         print("Ignoring packet")
         return
     
+    if packet[0] not in AttributeList:
+        print("Ignoring packet")
+        return
+
     need = packet[0]
     # INTEREST PACKET
     if len(packet) == 2:
@@ -142,6 +165,8 @@ def handle_packet(router, packet, socket):
             packet = (need, router.getLocation()[0])
             print("Forward to " + sensor_name)
             socket.sendto(json.dumps(packet).encode(), address)
+            # SET TIMER?
+            router.setWaitingList(sensor_name, time.time())
             return
         # Node does not have the sensor requires
         # Pass the data packet onto the next sensor
@@ -176,6 +201,12 @@ def handle_packet(router, packet, socket):
         print("Data packet Received!")
         data = packet[1]
         inPit = False
+        # Remove elements from waitlist
+        for item in router.getWaitingList():
+            if item[0] == packet[2]:
+                router.popWaitingList(item[0], item[1])
+                print("Deleting item from WaitingList. WaitingList: ", router.getWaitingList())
+                
         #Remove elements in PIT which contain interest
         for interest in router.getPit(): 
             if interest[0] == need:
@@ -205,12 +236,14 @@ def handle_packet(router, packet, socket):
 
 # Listen for incoming datagrams
 def inbound(socket,name,lock,router):
-    while(True):
+    while Alive:
         bytesAddressPair = socket.recvfrom(bufferSize)
         lock.acquire()
         message = bytesAddressPair[0]
         handle_packet(router,message,socket)
         lock.release()
+        if not Alive:
+            break
 
 
 class p2p_node():
@@ -233,12 +266,13 @@ class p2p_node():
         self.address = network_details[0]["address"]
     
     def run(self):
+        Alive=True
         #setup inbound and outbound ports
-        s_inbound,s_outbound = setup_sockets(self.listen_port,self.send_port)
+        s_inbound,s_outbound= setup_sockets(self.listen_port,self.send_port)
         # creating thread
         t1 = threading.Thread(target=inbound, args=(s_inbound,self.name,self.lock,self.router))
         t2 = threading.Thread(target=outbound, args=(s_outbound,self.router,self.lock,self.name))
-        t3 = threading.Thread(target=update, args=(self.interface,self.router,self.name))
+        t3 = threading.Thread(target=update, args=(s_outbound, self.interface,self.router,self.name))
 
         # starting thread 1
         t1.start()
