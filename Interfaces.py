@@ -71,12 +71,12 @@ class PositionSensor:
         self.x = random.randint(0, 500)
         self.y = random.randint(0, 500)
         self.z = random.randint(0, 200)
-        self.data = np.array((self.x, self.y, self.z))
+        self.data = (self.x, self.y, self.z)
     def update(self):
         self.x = min(500, max(0, self.x + np.sign(0.5) * random.randint(0, 20)))
         self.y = min(500, max(0, self.y + np.sign(0.5) * random.randint(0, 20)))
         self.z = min(200, max(0, self.z + np.sign(0.5) * random.randint(0, 10)))
-        self.data = np.array((self.x, self.y, self.z))
+        self.data = (self.x, self.y, self.z)
 
 class LightSensor:
     def __init__(self):

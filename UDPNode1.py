@@ -10,6 +10,13 @@ file = open('interfaces.json')
 references = json.load(file)
 Alive = True
 AttributeList = ["repair_kit", "temperature","power", "volcanic_activity", "position", "humidity", "lidar", "pressure", "light", "soil_composition", "battery", "radiation", "camera"]
+SensorList = ['RepairKit','LightSensor', 'PowerSensor', 'TemperatureSensor', 'HumiditySensor', 'LiDARSensor', 'LightSensor', 'RadiationSensor', 'AtmosphericPressureSensor', 'SoilCompositionSensor', 'VolcanicActivitySensor', 'PositionSensor', 'RoverCamera', 'Battery']
+
+
+
+# NEED TO DO:
+# Pop pit when 
+# Send location data with data
 
 #Finds the node with the given name in the reference json and returns its index
 def find_node(name):
@@ -29,14 +36,19 @@ def setup_sockets(listen_port,send_port):
     return listen_socket,send_socket
 
 ########## Update ##############
-def update(socket, interface,router,name):
+def update(socket, interface,router,name, lock):
     while Alive:
         # If sensor, update every 10 seconds
-        if (interface.__class__.__name__ in ['LightSensor', 'PowerSensor', 'TemperatureSensor', 'HumiditySensor', 'LiDARSensor', 'LightSensor', 'RadiationSensor', 'AtmosphericPressureSensor', 'SoilCompositionSensor', 'VolcanicActivitySensor', 'PositionSensor', 'RoverCamera', 'Battery']):
+        if (interface.__class__.__name__ in SensorList):
             interface.update()
             #Update content store with data
             router.setCS(name,interface.data,time.time())
         else:
+            # update position data in CS
+            lock.acquire()
+            update_position(router, socket)
+            lock.release()
+            # Check if sensor down
             for item in router.getWaitingList():
                 if (float(time.time() - item[1])) > 10.0:
                     print("Sensor down!")
@@ -50,20 +62,34 @@ def update(socket, interface,router,name):
                     socket.sendto(json.dumps(packet).encode(), (neighbor[1],neighbor[2]))
                     print("Interest {} sent to {}.".format(interest, neighbor))
                     router.popWaitingList(item[0], item[1])
+                   # router.popPit()
         time.sleep(10)
 
 
+def update_position(router, socket):
+    sensor_name = router.getName() + "/position"
+    #print("Getting location data ")
+    # Get address of sensor
+    address = router.getAddress(sensor_name)
+    # Create data packet
+    packet = ('position', router.getLocation()[0])
+    #print("Forward to " + sensor_name)
+    socket.sendto(json.dumps(packet).encode(), address)
+    router.setPit('position', router.getName())
+    return
 
 
 ########## Outbound #############
 # Send interest packet
 def outbound(socket,router,lock,node):
+    global Alive
     while Alive:
         interest = input('Ask the network for information: ') 
         if interest == "Fail":
+            #global Alive
             Alive = False
             print("Node dead. Alive is: ", Alive)
-            break
+            exit(1)
         lock.acquire()
         # Get neighbours of the node that are rovers, and choose randomly which one to send it to
         neighbor = random.choice( router.getNeighbourRovers())
@@ -88,17 +114,6 @@ def fresh(name, router):
             print("Fresh")
             return True 
 
-def update_position(router):
-    sensor_name = router.getName() + "/position"
-    print("Getting location data ")
-    # Get address of sensor
-    address = router.getAddress(sensor_name)
-    
-    # Create data packet
-    packet = ('position', router.getLocation()[0])
-    print("Forward to " + sensor_name)
-    socket.sendto(json.dumps(packet).encode(), address)
-    return
 
 # Handle Income Data Packet
 def handle_packet(router, packet, socket):
@@ -137,6 +152,8 @@ def handle_packet(router, packet, socket):
             address = router.getAddress(origin_node)
             # Sent data back to node that requested data
             print("Forward to " + origin_node)
+            print(packet)
+            print(type(packet))
             socket.sendto(json.dumps(packet).encode(), address) 
             return
         
@@ -243,7 +260,7 @@ def inbound(socket,name,lock,router):
         handle_packet(router,message,socket)
         lock.release()
         if not Alive:
-            break
+            exit(1)
 
 
 class p2p_node():
@@ -266,13 +283,12 @@ class p2p_node():
         self.address = network_details[0]["address"]
     
     def run(self):
-        Alive=True
         #setup inbound and outbound ports
         s_inbound,s_outbound= setup_sockets(self.listen_port,self.send_port)
         # creating thread
         t1 = threading.Thread(target=inbound, args=(s_inbound,self.name,self.lock,self.router))
         t2 = threading.Thread(target=outbound, args=(s_outbound,self.router,self.lock,self.name))
-        t3 = threading.Thread(target=update, args=(s_outbound, self.interface,self.router,self.name))
+        t3 = threading.Thread(target=update, args=(s_outbound, self.interface,self.router,self.name, self.lock))
 
         # starting thread 1
         t1.start()
