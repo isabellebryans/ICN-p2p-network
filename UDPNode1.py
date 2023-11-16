@@ -19,9 +19,8 @@ SensorList = ['RepairKit','LightSensor', 'PowerSensor', 'TemperatureSensor', 'Hu
 # (name: (data, location), time)
 
 
-# NEED TO DO:
-# Pop pit when 
-# Send location data with data
+# When a rover fails.
+# 
 
 #Finds the node with the given name in the reference json and returns its index
 def find_node(name):
@@ -52,6 +51,7 @@ def update(socket, interface,router,name, lock):
             # update position data in CS
             lock.acquire()
             update_position(router, socket)
+            print("updating position")
             lock.release()
             # Check if sensor down
             for item in router.getWaitingList():
@@ -121,7 +121,9 @@ def outbound(socket,router,lock,node):
 # check if the data in the CS is fresh, or old
 def fresh(name, router):
     if name in router.getCS():
-        if (float(time.time() - router.getCS()[name][1])) > 10.0:
+        print("name is: ", name)
+        print("CS is: ", router.getCS()[name])
+        if (float(time.time() - router.getCS()[name][0][1])) > 10.0:
             print("Stale")
             return False
         else:
@@ -232,13 +234,15 @@ def handle_packet(router, packet, socket):
     else:
         print("Data packet Received!")
         data = packet[1]
+
         # data = (data, time) if from sensor
         # data = ((data, location), time) if from other rover/base
-        if not isinstance(data[0], tuple):
+        if not isinstance(data[0], list):
             if need == 'position':
                 router.setCS(need,data[0],data[1])
                 return
             # Add position data
+            print("CS is: ", router.getCS())
             position = router.getCS()['position'][0]
             data = (data, position)
 
