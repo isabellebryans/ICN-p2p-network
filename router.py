@@ -1,7 +1,10 @@
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
 import json
 
 class Router:
-    def __init__(self, name):
+    def __init__(self, name,public_key,private_key):
         self.multi_request = 0
         self.name = name  # device name
         self.cs = dict()  # name: data: freshness
@@ -9,6 +12,8 @@ class Router:
         self.fib = list(tuple())  # prefix, ip address, ongoing interface
         self.location = list(tuple()) #name, address, listen port, send port
         self.sensor_list = list()
+        self.private_key = private_key
+        self.public_key = public_key
       
 
         with open("interfaces.json", 'r') as load_f:
@@ -56,6 +61,18 @@ class Router:
                     addr = list(sensor_list.values())[2]
                     self.setFib(sensor_name, addr, listen_port)
 
+
+    def getSerialisedPublicKey(self):
+        serialized_key = self.public_key.save_pkcs1(format='PEM')
+        serialized_key = serialized_key.decode('utf-8')
+        return serialized_key
+
+    def getPublicKey(self):
+        return self.public_key
+    
+    def getPrivateKey(self):
+        return self.private_key
+    
     def getName(self):
         return self.name
 

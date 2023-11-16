@@ -4,6 +4,14 @@ import random
 import json
 import Interfaces
 import time
+import rsa
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+import base64
+
+
+
+
 
 bufferSize  = 1024
 file = open('interfaces.json')
@@ -49,7 +57,9 @@ def outbound(socket,router,lock,node):
         # Get neighbours of the node that are rovers, and choose randomly which one to send it to
         neighbor = random.choice( router.getNeighbourRovers())
         # Include the interest and the origin of the interest request
-        packet = (interest, node)
+        serialised_public_key = router.getSerialisedPublicKey()
+        packet = (interest, node, serialised_public_key) 
+        
         # Set the PIT 
         router.setPit(interest, node)
         socket.sendto(json.dumps(packet).encode(), (neighbor[1],neighbor[2]))
@@ -73,13 +83,17 @@ def handle_packet(router, packet, socket):
     # decode packet
     packet = json.loads(packet.decode())
     print("Packet recieved is: ", packet)
+    if not isinstance(packet, list):
+        print("Ignoring packet")
+        return
     if packet[0] not in ["temperature","power", "volcanic_activity", "position", "humidity", "lidar", "pressure", "light", "soil_composition", "battery", "radiation", "camera"]:
         print("Ignoring packet")
         return
     need = packet[0]
     # INTEREST PACKET
-    if len(packet) == 2:
+    if len(packet) == 3:
         origin_node = packet[1] # origin
+        origin_public_key = packet[2]
 
         print("Interest Packet Received! Interest packet is: ", packet)
         # If need in router.getCS() and fresh(need,router):
@@ -91,8 +105,13 @@ def handle_packet(router, packet, socket):
         if len(current_interface.split("/")) == 4:      # If the node is a sensor
             print("router.getCS(): ", router.getCS())
             # Get the data from the sensors CS
-            data = router.getCS()[router.getName()]
-            packet = (need,data,router.getName())
+            data = str(router.getCS()[router.getName()][0])
+            print("Encrypting data: ", data)
+            loaded_serialized_key = origin_public_key.encode('utf-8')
+            loaded_public_key = rsa.PublicKey.load_pkcs1(loaded_serialized_key)
+            encrypted_data = rsa.encrypt(data.encode(), loaded_public_key)
+            encrypted_data = base64.b64encode(encrypted_data).decode('utf-8')
+            packet = (need,encrypted_data,router.getName(),0)
             #print(data)
             # Get the address of the node that sent you the packet to sent it back
             address = router.getAddress(origin_node)
@@ -106,7 +125,13 @@ def handle_packet(router, packet, socket):
             #Produce data packet name : data : freshness
             address = router.getAddress(origin_node)
             # need to change this to store location of where the data was gotten
-            packet = (need,router.getCS()[need],origin_node)
+            data = str(router.getCS()[need][0])
+            print("Encrypting data: ", data)
+            loaded_serialized_key = origin_public_key.encode('utf-8')
+            loaded_public_key = rsa.PublicKey.load_pkcs1(loaded_serialized_key)
+            encrypted_data = rsa.encrypt(data.encode(), loaded_public_key)   
+            encrypted_data = base64.b64encode(encrypted_data).decode('utf-8')         
+            packet = (need,encrypted_data,origin_node,0)
             # print("Forward to " + interface)
             socket.sendto(json.dumps(packet).encode(), address)
             return
@@ -123,7 +148,7 @@ def handle_packet(router, packet, socket):
             router.setPit(need,origin_node)
             print("Updated pit. PIT: ", router.getPit())
             # Create data packet
-            packet = (need, router.getLocation()[0])
+            packet = (need, router.getLocation()[0], origin_public_key)
             print("Forward to " + sensor_name)
             socket.sendto(json.dumps(packet).encode(), address)
             return
@@ -150,7 +175,7 @@ def handle_packet(router, packet, socket):
                 destination_node = random.choice(destination_node)
             else:
                 destination_node = destination_node[0]
-            packet = (need, router.getLocation()[0])
+            packet = (need, router.getLocation()[0],origin_public_key)
             print("Forwarding to ", destination_node)
             socket.sendto(json.dumps(packet).encode(),(destination_node[1],destination_node[2]))
             return
@@ -175,10 +200,12 @@ def handle_packet(router, packet, socket):
         if inPit:
             print("Popped from PIT. New PIT: ", router.getPit())
             print("Updating Content store")
-            print("adding data: ", data)
+            data = base64.b64decode(data)
+            decrypted_data = rsa.decrypt(data, router.getPrivateKey())
+            print("adding Decrypted data: ", decrypted_data)
             print("packet: ", packet)
         
-            router.setCS(need,data[0],data[1])
+            router.setCS(need,decrypted_data[0],decrypted_data[1])
             print("CS is now: ", router.getCS())
             return
         else:
