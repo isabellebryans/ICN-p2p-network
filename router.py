@@ -4,7 +4,7 @@ class Router:
     def __init__(self, name):
         self.multi_request = 0
         self.name = name  # device name
-        self.cs = dict()  # name: data: freshness
+        self.cs = dict()  # name: (data, location, freshness)
         self.pit = list(tuple())  # name
         self.fib = list(tuple())  # prefix, ip address, ongoing interface
         self.location = list(tuple()) #name, address, listen port, send port
@@ -102,7 +102,7 @@ class Router:
     
     def getAddress(self,name):
         for address in self.fib:
-            print("Comparing name ", name, " with address in fib: ", address)
+            #print("Comparing name ", name, " with address in fib: ", address)
             if name == address[0]:
                 return(address[1],address[2])
 

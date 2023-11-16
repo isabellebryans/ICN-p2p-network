@@ -12,6 +12,11 @@ Alive = True
 AttributeList = ["repair_kit", "temperature","power", "volcanic_activity", "position", "humidity", "lidar", "pressure", "light", "soil_composition", "battery", "radiation", "camera"]
 SensorList = ['RepairKit','LightSensor', 'PowerSensor', 'TemperatureSensor', 'HumiditySensor', 'LiDARSensor', 'LightSensor', 'RadiationSensor', 'AtmosphericPressureSensor', 'SoilCompositionSensor', 'VolcanicActivitySensor', 'PositionSensor', 'RoverCamera', 'Battery']
 
+# CONTENT STORE OF SENSOR:
+# (name: data, time)
+
+# CONTENT STORE OF ROVER/BASE:
+# (name: (data, location), time)
 
 
 # NEED TO DO:
@@ -78,6 +83,15 @@ def update_position(router, socket):
     router.setPit('position', router.getName())
     return
 
+# can make this more simple if position data always in CS
+def get_position(router):
+    for item in router.getCS():
+        if item == 'position':
+            return (router.getCS()[item][0])
+    print("Error, no position data found")
+    return 
+
+# (name, (data, location), time)
 
 ########## Outbound #############
 # Send interest packet
@@ -145,6 +159,7 @@ def handle_packet(router, packet, socket):
         if len(current_interface.split("/")) == 4:      # If the node is a sensor
             print("router.getCS(): ", router.getCS())
             # Get the data from the sensors CS
+            # data = (data, time)
             data = router.getCS()[router.getName()]
             packet = (need,data,router.getName())
             #print(data)
@@ -217,6 +232,16 @@ def handle_packet(router, packet, socket):
     else:
         print("Data packet Received!")
         data = packet[1]
+        # data = (data, time) if from sensor
+        # data = ((data, location), time) if from other rover/base
+        if not isinstance(data[0], tuple):
+            if need == 'position':
+                router.setCS(need,data[0],data[1])
+                return
+            # Add position data
+            position = router.getCS()['position'][0]
+            data = (data, position)
+
         inPit = False
         # Remove elements from waitlist
         for item in router.getWaitingList():
