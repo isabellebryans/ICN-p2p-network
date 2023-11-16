@@ -105,12 +105,15 @@ def handle_packet(router, packet, socket):
         if len(current_interface.split("/")) == 4:      # If the node is a sensor
             print("router.getCS(): ", router.getCS())
             # Get the data from the sensors CS
-            data = str(router.getCS()[router.getName()][0])
+            data = router.getCS()[router.getName()]
             print("Encrypting data: ", data)
             loaded_serialized_key = origin_public_key.encode('utf-8')
             loaded_public_key = rsa.PublicKey.load_pkcs1(loaded_serialized_key)
-            encrypted_data = rsa.encrypt(data.encode(), loaded_public_key)
-            encrypted_data = base64.b64encode(encrypted_data).decode('utf-8')
+            encrypted_data = []
+            for d in data:
+                encrypted_d = rsa.encrypt(str(d).encode(), loaded_public_key)   
+                encrypted_data.append(base64.b64encode(encrypted_d).decode('utf-8'))
+            print("encrypted data: ", encrypted_data)
             packet = (need,encrypted_data,router.getName(),0)
             #print(data)
             # Get the address of the node that sent you the packet to sent it back
@@ -125,12 +128,15 @@ def handle_packet(router, packet, socket):
             #Produce data packet name : data : freshness
             address = router.getAddress(origin_node)
             # need to change this to store location of where the data was gotten
-            data = str(router.getCS()[need][0])
+            data = router.getCS()[need]
             print("Encrypting data: ", data)
             loaded_serialized_key = origin_public_key.encode('utf-8')
             loaded_public_key = rsa.PublicKey.load_pkcs1(loaded_serialized_key)
-            encrypted_data = rsa.encrypt(data.encode(), loaded_public_key)   
-            encrypted_data = base64.b64encode(encrypted_data).decode('utf-8')         
+            encrypted_data = []
+            for d in data:
+                encrypted_d = rsa.encrypt(str(d).encode(), loaded_public_key)   
+                encrypted_data.append(base64.b64encode(encrypted_d).decode('utf-8'))      
+            print("encrypted data: ", encrypted_data)   
             packet = (need,encrypted_data,origin_node,0)
             # print("Forward to " + interface)
             socket.sendto(json.dumps(packet).encode(), address)
@@ -200,8 +206,10 @@ def handle_packet(router, packet, socket):
         if inPit:
             print("Popped from PIT. New PIT: ", router.getPit())
             print("Updating Content store")
-            data = base64.b64decode(data)
-            decrypted_data = rsa.decrypt(data, router.getPrivateKey())
+            decrypted_data=[]
+            for d in data:
+                d = base64.b64decode(d.encode('utf-8'))
+                decrypted_data.append(rsa.decrypt(d, router.getPrivateKey()))
             print("adding Decrypted data: ", decrypted_data)
             print("packet: ", packet)
         
