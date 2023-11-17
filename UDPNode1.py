@@ -47,10 +47,7 @@ def update(socket, interface,router,name, lock):
             router.setCS(name,interface.data,time.time())
         else:
             # update position data in CS
-            lock.acquire()
-            update_position(router, socket)
-            print("updating position")
-            lock.release()
+            
             # Check if sensor down
             for item in router.getWaitingList():
                 if (float(time.time() - item[1])) > 10.0:
@@ -125,7 +122,7 @@ def fresh(name, router):
     if name in router.getCS():
         print("name is: ", name)
         print("CS is: ", router.getCS()[name])
-        if (float(time.time() - router.getCS()[name][0][1])) > 10.0:
+        if (float(time.time() - router.getCS()[name][1])) > 10.0:
             print("Stale")
             return False
         else:
@@ -263,17 +260,6 @@ def handle_packet(router, packet, socket):
         print("Data packet Received!")
         data = packet[1]
 
-        # data = (data, time) if from sensor
-        # data = ((data, location), time) if from other rover/base
-        if not isinstance(data[0], list):
-            if need == 'position':
-                router.setCS(need,data[0],data[1])
-                return
-            # Add position data
-            #print("CS is: ", router.getCS())
-            position = router.getCS()['position'][0]
-            data = (data, position)
-
         inPit = False
         # Remove elements from waitlist
         for item in router.getWaitingList():
@@ -282,6 +268,7 @@ def handle_packet(router, packet, socket):
                 #print("Deleting item from WaitingList. WaitingList: ", router.getWaitingList())
                 
         #Remove elements in PIT which contain interest
+        print("Old PIT: ", router.getPit())
         for interest in router.getPit(): 
             if interest[0] == need:
                 #print("Satisfying interest table")
@@ -294,10 +281,10 @@ def handle_packet(router, packet, socket):
                     socket.sendto(json.dumps(packet).encode(), address)
                 inPit = True
         if inPit:
-            #print("Popped from PIT. New PIT: ", router.getPit())
-            #print("Updating Content store")
-            #print("adding data: ", data)
-            #print("packet: ", packet)
+            print("Popped from PIT. New PIT: ", router.getPit())
+            print("Updating Content store")
+            print("adding data: ", data)
+            print("packet: ", packet)
         
             router.setCS(need,data[0],data[1])
             print("CS is now: ", router.getCS())
