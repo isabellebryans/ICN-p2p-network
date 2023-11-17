@@ -162,6 +162,7 @@ def handle_packet(router, packet, socket):
     if len(packet) == 3:
         origin_node = packet[1] # origin
         origin_public_key = packet[2]
+        origin_public_key = packet[2]
 
         print("Interest Packet Received! Interest packet is: ", packet)
         # If need in router.getCS() and fresh(need,router):
