@@ -4,6 +4,8 @@ from UDPNode1 import p2p_node
 from router import Router
 import Interfaces as RI #roverInterfaces
 import hashlib
+import rsa
+
 
 def initialize_position():
     # Random position generation for rover
@@ -56,7 +58,6 @@ if __name__ == "__main__":
     if args.name is None:
         print("Node identifier is required.")
         exit(1)
-
     if args.password is None:
         print("Password is required.")
         exit(1)
@@ -65,7 +66,8 @@ if __name__ == "__main__":
         print("Password is incorrect!")
         exit(1)
 
-    com_router = Router(args.name)
+    (public_key, private_key) = rsa.newkeys(512)
+    com_router = Router(args.name,public_key, private_key)
     node_entity = create_sensor_or_rover(args.name)
     mars_node = p2p_node(args.name, com_router, node_entity)
     mars_node.run()
