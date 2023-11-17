@@ -4,6 +4,14 @@ import random
 import json
 import Interfaces
 import time
+import rsa
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+import base64
+
+
+
+
 
 bufferSize  = 1024
 file = open('interfaces.json')
@@ -61,7 +69,8 @@ def update(socket, interface,router,name, lock):
                     # Get neighbours of the node that are rovers, and choose randomly which one to send it to
                     neighbor = random.choice( router.getNeighbourRovers())
                     # Include the interest and the origin of the interest request
-                    packet = (interest, name)
+                    serialised_public_key=router.getSerialisedPublicKey()
+                    packet = (interest, name,serialised_public_key)
                     # Set the PIT 
                     router.setPit(interest, name)
                     socket.sendto(json.dumps(packet).encode(), (neighbor[1],neighbor[2]))
@@ -77,7 +86,8 @@ def update_position(router, socket):
     # Get address of sensor
     address = router.getAddress(sensor_name)
     # Create data packet
-    packet = ('position', router.getLocation()[0])
+    serialised_public_key=router.getSerialisedPublicKey()
+    packet = ('position', router.getLocation()[0],serialised_public_key)
     #print("Forward to " + sensor_name)
     socket.sendto(json.dumps(packet).encode(), address)
     router.setPit('position', router.getName())
@@ -108,7 +118,9 @@ def outbound(socket,router,lock,node):
         # Get neighbours of the node that are rovers, and choose randomly which one to send it to
         neighbor = random.choice( router.getNeighbourRovers())
         # Include the interest and the origin of the interest request
-        packet = (interest, node)
+        serialised_public_key = router.getSerialisedPublicKey()
+        packet = (interest, node, serialised_public_key) 
+        
         # Set the PIT 
         router.setPit(interest, node)
         socket.sendto(json.dumps(packet).encode(), (neighbor[1],neighbor[2]))
@@ -130,7 +142,6 @@ def fresh(name, router):
             print("Fresh")
             return True 
 
-
 # Handle Income Data Packet
 def handle_packet(router, packet, socket):
     # decode packet
@@ -148,8 +159,9 @@ def handle_packet(router, packet, socket):
 
     need = packet[0]
     # INTEREST PACKET
-    if len(packet) == 2:
+    if len(packet) == 3:
         origin_node = packet[1] # origin
+        origin_public_key = packet[2]
 
         print("Interest Packet Received! Interest packet is: ", packet)
         # If need in router.getCS() and fresh(need,router):
@@ -163,7 +175,22 @@ def handle_packet(router, packet, socket):
             # Get the data from the sensors CS
             # data = (data, time)
             data = router.getCS()[router.getName()]
-            packet = (need,data,router.getName())
+            print("Encrypting data: ", data)
+            loaded_serialized_key = origin_public_key.encode('utf-8')
+            loaded_public_key = rsa.PublicKey.load_pkcs1(loaded_serialized_key)
+            encrypted_data = []
+            for d in data:
+                if isinstance(d,list):
+                    encrypted_x=[]
+                    for x in d:
+                        encrypted_d = rsa.encrypt(str(x).encode(), loaded_public_key)   
+                        encrypted_x.append(base64.b64encode(encrypted_d).decode('utf-8'))        
+                    encrypted_data.append(encrypted_x)
+                else:
+                    encrypted_d = rsa.encrypt(str(d).encode(), loaded_public_key)   
+                    encrypted_data.append(base64.b64encode(encrypted_d).decode('utf-8'))
+            print("encrypted data: ", encrypted_data)
+            packet = (need,encrypted_data,router.getName(),0)
             #print(data)
             # Get the address of the node that sent you the packet to sent it back
             address = router.getAddress(origin_node)
@@ -179,7 +206,23 @@ def handle_packet(router, packet, socket):
             #Produce data packet name : data : freshness
             address = router.getAddress(origin_node)
             # need to change this to store location of where the data was gotten
-            packet = (need,router.getCS()[need],origin_node)
+            data = router.getCS()[need]
+            print("Encrypting data: ", data)
+            loaded_serialized_key = origin_public_key.encode('utf-8')
+            loaded_public_key = rsa.PublicKey.load_pkcs1(loaded_serialized_key)
+            encrypted_data = []
+            for d in data:
+                if isinstance(d,list):
+                    encrypted_x=[]
+                    for x in d:
+                        encrypted_d = rsa.encrypt(str(x).encode(), loaded_public_key)   
+                        encrypted_x.append(base64.b64encode(encrypted_d).decode('utf-8'))        
+                    encrypted_data.append(encrypted_x)
+                else:
+                    encrypted_d = rsa.encrypt(str(d).encode(), loaded_public_key)   
+                    encrypted_data.append(base64.b64encode(encrypted_d).decode('utf-8'))           
+            print("encrypted data: ", encrypted_data)   
+            packet = (need,encrypted_data,origin_node,0)
             # print("Forward to " + interface)
             socket.sendto(json.dumps(packet).encode(), address)
             return
@@ -196,7 +239,7 @@ def handle_packet(router, packet, socket):
             router.setPit(need,origin_node)
             print("Updated pit. PIT: ", router.getPit())
             # Create data packet
-            packet = (need, router.getLocation()[0])
+            packet = (need, router.getLocation()[0], origin_public_key)
             print("Forward to " + sensor_name)
             socket.sendto(json.dumps(packet).encode(), address)
             # SET TIMER?
@@ -225,7 +268,7 @@ def handle_packet(router, packet, socket):
                 destination_node = random.choice(destination_node)
             else:
                 destination_node = destination_node[0]
-            packet = (need, router.getLocation()[0])
+            packet = (need, router.getLocation()[0],origin_public_key)
             print("Forwarding to ", destination_node)
             socket.sendto(json.dumps(packet).encode(),(destination_node[1],destination_node[2]))
             return
@@ -237,6 +280,7 @@ def handle_packet(router, packet, socket):
 
         # data = (data, time) if from sensor
         # data = ((data, location), time) if from other rover/base
+        print("Data[0] is : ", data[0])
         if not isinstance(data[0], list):
             if need == 'position':
                 router.setCS(need,data[0],data[1])
@@ -268,10 +312,21 @@ def handle_packet(router, packet, socket):
         if inPit:
             print("Popped from PIT. New PIT: ", router.getPit())
             print("Updating Content store")
-            print("adding data: ", data)
+            decrypted_data=[]
+            for d in data:
+                if isinstance(d,list):
+                    decrypted_x=[]
+                    for x in d:
+                        x = base64.b64decode(x.encode('utf-8'))
+                        decrypted_x.append(rsa.decrypt(x, router.getPrivateKey()))
+                    decrypted_data.append(decrypted_x)
+                else:
+                    d = base64.b64decode(d.encode('utf-8'))
+                    decrypted_data.append(rsa.decrypt(d, router.getPrivateKey()))
+            print("adding Decrypted data: ", decrypted_data)
             print("packet: ", packet)
         
-            router.setCS(need,data[0],data[1])
+            router.setCS(need,decrypted_data[0],decrypted_data[1])
             print("CS is now: ", router.getCS())
             return
         else:
@@ -313,7 +368,7 @@ class p2p_node():
     
     def run(self):
         #setup inbound and outbound ports
-        s_inbound,s_outbound= setup_sockets(self.listen_port,self.send_port)
+        s_inbound,s_outbound = setup_sockets(self.listen_port,self.send_port)
         # creating thread
         t1 = threading.Thread(target=inbound, args=(s_inbound,self.name,self.lock,self.router))
         t2 = threading.Thread(target=outbound, args=(s_outbound,self.router,self.lock,self.name))
