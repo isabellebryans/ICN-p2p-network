@@ -1,5 +1,7 @@
 # P2P network overlay using Information Centric Networking Protocols (NDN)
 
+This is Project 3 for the Scalable Computing module.
+
 On Pi 1 Cd into the project folder.<br />
 Run the command:  source .tmux/ndn-rovers <br />
 This starts the diver network.\newline
