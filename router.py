@@ -1,7 +1,10 @@
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
 import json
 
 class Router:
-    def __init__(self, name):
+    def __init__(self, name,public_key,private_key):
         self.multi_request = 0
         self.name = name  # device name
         self.cs = dict()  # name: data: freshness
@@ -9,6 +12,9 @@ class Router:
         self.fib = list(tuple())  # prefix, ip address, ongoing interface
         self.location = list(tuple()) #name, address, listen port, send port
         self.sensor_list = list()
+        self.private_key = private_key
+        self.public_key = public_key
+        self.WaitingList = list(tuple()) # sensor name, time
       
 
         with open("interfaces.json", 'r') as load_f:
@@ -56,6 +62,18 @@ class Router:
                     addr = list(sensor_list.values())[2]
                     self.setFib(sensor_name, addr, listen_port)
 
+
+    def getSerialisedPublicKey(self):
+        serialized_key = self.public_key.save_pkcs1(format='PEM')
+        serialized_key = serialized_key.decode('utf-8')
+        return serialized_key
+
+    def getPublicKey(self):
+        return self.public_key
+    
+    def getPrivateKey(self):
+        return self.private_key
+    
     def getName(self):
         return self.name
 
@@ -64,6 +82,16 @@ class Router:
     
     def getSensors(self):
         return self.sensor_list
+    
+    def getWaitingList(self):
+        return self.WaitingList
+    
+    def setWaitingList(self, sensor, time):
+        self.WaitingList.append((sensor, time))
+        return
+        
+    def popWaitingList(self,name,interface):
+        self.WaitingList.remove((name,interface))
 
     # cache new data
     def setCS(self, name, data, freshness):
@@ -91,7 +119,7 @@ class Router:
     
     def getAddress(self,name):
         for address in self.fib:
-            print("Comparing name ", name, " with address in fib: ", address)
+            #print("Comparing name ", name, " with address in fib: ", address)
             if name == address[0]:
                 return(address[1],address[2])
 

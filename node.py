@@ -3,6 +3,8 @@ import random
 from UDPNode1 import p2p_node
 from router import Router
 import Interfaces as RI #roverInterfaces
+import rsa
+import hashlib
 
 def initialize_position():
     # Random position generation for rover
@@ -33,7 +35,8 @@ def instantiate_sensor(sensor_type):
         'battery': RI.Battery,
         'position': RI.PositionSensor,
         'volcanic_activity': RI.VolcanicActivitySensor,
-        'power': RI.PowerSensor
+        'power': RI.PowerSensor,
+        'repair_kit': RI.RepairKit
     }
     return sensor_map.get(sensor_type, lambda: None)()
 
@@ -48,13 +51,21 @@ def instantiate_entity(entity_type, identifier):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Initialize a Mars Rover node')
     parser.add_argument('--name', type=str, help='Identifier for the node')
+    parser.add_argument('--password', type=str, help='Identifier for the node')
     args = parser.parse_args()
 
     if args.name is None:
         print("Node identifier is required.")
         exit(1)
-
-    com_router = Router(args.name)
+    if args.password is None:
+        print("Password is required.")
+        exit(1)
+        
+    elif args.password != "3qlXJjjTIyy6WBhq3RZxFX7HE":
+        print("Password is incorrect!")
+        exit(1)
+    (public_key, private_key) = rsa.newkeys(512)
+    com_router = Router(args.name,public_key, private_key)
     node_entity = create_sensor_or_rover(args.name)
     mars_node = p2p_node(args.name, com_router, node_entity)
     mars_node.run()
